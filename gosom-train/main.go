@@ -17,11 +17,20 @@ var data = [][]float64{
 func main() {
 	som := gosom.NewSOM(data, 8, 8)
 	som.InitializeWithRandomDataPoints()
-	som.Train(1000, 0.5)
+	som.DistanceFunction = gosom.ManhattanDistance
+	som.CoolingFunction = gosom.MediumCooling
+	som.NeighborhoodFunction = gosom.GaussianNeighborhood
+
+	som.Train(10000, 0.5)
 	fmt.Println(som)
 
 	fmt.Printf("3.5: %f\n", som.Classify([]float64{0.5}))
 	fmt.Printf("2.5: %f\n", som.Classify([]float64{1.5}))
 	fmt.Printf("1.5: %f\n", som.Classify([]float64{2.5}))
-	fmt.Printf("0.5: %f\n", som.Classify([]float64{3.5}))
+	fmt.Printf("0.5: %f\n\n", som.Classify([]float64{3.5}))
+
+	fmt.Printf("3.5: %f\n", som.Interpolate([]float64{0.5}, 16))
+	fmt.Printf("2.5: %f\n", som.Interpolate([]float64{1.5}, 16))
+	fmt.Printf("1.5: %f\n", som.Interpolate([]float64{2.5}, 16))
+	fmt.Printf("0.5: %f\n", som.Interpolate([]float64{3.5}, 16))
 }

@@ -73,7 +73,7 @@ func (som *SOM) InitializeWithRandomDataPoints() {
 }
 
 func (som *SOM) Closest(input []float64) *Node {
-	n := make([]*Node, 1)
+	n := make([]*Node, 0, 1)
 
 	// get initial distance
 	t := som.DistanceFunction(input, som.Nodes[0].Weights)
@@ -98,6 +98,26 @@ func (som *SOM) Closest(input []float64) *Node {
 	}
 
 	return n[0]
+}
+
+func (som *SOM) Neighbors(input []float64, K int) []*Node {
+	nodes := make([]*Node, len(som.Nodes))
+	copy(nodes, som.Nodes)
+
+	SortNodes(nodes, func(n1, n2 *Node)(bool){
+		d1 := som.DistanceFunction(input, n1.Weights)
+		d2 := som.DistanceFunction(input, n2.Weights)
+
+		return d1 < d2
+	})
+
+	neighbors := make([]*Node, 0, K)
+
+	for i:=0; i<K; i++ {
+		neighbors = append(neighbors, nodes[i])
+	}
+
+	return neighbors
 }
 
 func (som *SOM) Train(steps int, initialLearningRate float64) {
@@ -138,6 +158,25 @@ func (som *SOM) Classify(input []float64) []float64 {
 	o := make([]float64, som.Columns)
 	copy(o, som.Closest(input).Weights)
 	return o
+}
+
+func (som *SOM) Interpolate(input []float64, K int) []float64 {
+	neighbors := som.Neighbors(input, K)
+	total := make([]float64, som.Columns)
+
+	// add up all values
+	for i:=0; i<len(neighbors); i++ {
+		for j:=0; j<som.Columns; j++ {
+			total[j] += neighbors[i].Weights[j];
+		}
+	}
+
+	// calculate average
+	for i:=0; i<som.Columns; i++ {
+		total[i] = total[i] / float64(K);
+	}
+
+	return total;
 }
 
 // String returns a string matrix of all nodes and weights
