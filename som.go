@@ -2,6 +2,7 @@ package gosom
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 )
 
@@ -34,17 +35,19 @@ func NewSOM(data [][]float64, width, height int) *SOM {
 	}
 
 	// create nodes
-	for i:=0; i<height; i++ {
-		for j:=0; j<width; j++ {
-			k := i * height + j
-			som.Nodes[k] = &Node{ X: j, Y: i}
+	for i:=0; i<som.Height; i++ {
+		for j:=0; j<som.Width; j++ {
+			k := i * som.Height + j
+			som.Nodes[k] = NewNode(j, i)
 		}
 	}
 
 	return som
 }
 
+// Prepare initializes the nodes using the selected Initialization method.
 func (som *SOM) Prepare(initialization Initialization) {
+	n := len(som.Data)
 	d := len(som.Data[0])
 
 	switch initialization {
@@ -53,13 +56,26 @@ func (som *SOM) Prepare(initialization Initialization) {
 			n.Weights = make([]float64, d)
 		}
 	case RandomInitialization:
-		/*for _, n := range som.Nodes {
+		min := make([]float64, d)
+		max := make([]float64, d)
 
-		}*/
+		for j:=0; j<n; j++ {
+			for i:=0; i<d; i++ {
+				min[i] = math.Min(min[i], som.Data[j][i])
+				max[i] = math.Max(max[i], som.Data[j][i])
+			}
+		}
+
+		for _, node := range som.Nodes {
+			node.Weights = make([]float64, d)
+			for i:=0; i<d; i++ {
+				node.Weights[i] = rand.Float64() * (max[i] - min[i]) + min[i]
+			}
+		}
 	case RandomDataInitialization:
-		for _, n := range som.Nodes {
-			n.Weights = make([]float64, d)
-			copy(n.Weights, som.Data[rand.Intn(len(som.Data)-1)])
+		for _, node := range som.Nodes {
+			node.Weights = make([]float64, d)
+			copy(node.Weights, som.Data[rand.Intn(n-1)])
 		}
 	}
 }
@@ -79,7 +95,7 @@ func (som *SOM) String() string {
 	for i:=0; i<som.Height; i++ {
 		for j:=0; j<som.Width; j++ {
 			k := i * som.Height + j
-			s += fmt.Sprintf("%v ", som.Nodes[k].Weights)
+			s += fmt.Sprintf("%.2f ", som.Nodes[k].Weights)
 		}
 
 		s += "\n"

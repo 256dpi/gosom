@@ -1,14 +1,13 @@
 package gosom
 
 type Node struct {
-	X, Y int
+	Position []float64
 	Weights []float64
 }
 
 func NewNode(x, y int) *Node {
 	return &Node{
-		X: x,
-		Y: y,
+		Position: []float64{ float64(x), float64(y) },
 	}
 }
 
