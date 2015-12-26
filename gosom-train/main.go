@@ -20,8 +20,8 @@ func main() {
 	som.Train(1000, 0.5)
 	fmt.Println(som)
 
-	fmt.Printf("3.5: %f\n", som.Predict([]float64{0.5}))
-	fmt.Printf("2.5: %f\n", som.Predict([]float64{1.5}))
-	fmt.Printf("1.5: %f\n", som.Predict([]float64{2.5}))
-	fmt.Printf("0.5: %f\n", som.Predict([]float64{3.5}))
+	fmt.Printf("3.5: %f\n", som.Classify([]float64{0.5}))
+	fmt.Printf("2.5: %f\n", som.Classify([]float64{1.5}))
+	fmt.Printf("1.5: %f\n", som.Classify([]float64{2.5}))
+	fmt.Printf("0.5: %f\n", som.Classify([]float64{3.5}))
 }
