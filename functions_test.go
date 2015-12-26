@@ -8,17 +8,27 @@ import (
 )
 
 func TestEuclideanDistance(t *testing.T) {
-	a := []float64{1.0, 1.0}
-	b := []float64{0.0, 0.0}
+	require.Equal(t, math.Sqrt(2), EuclideanDistance(
+		[]float64{1.0, 1.0},
+		[]float64{0.0, 0.0},
+	))
 
-	require.Equal(t, math.Sqrt(2), EuclideanDistance(a, b))
+	require.Equal(t, 1.0, EuclideanDistance(
+		[]float64{0.0, 1.0},
+		[]float64{0.0, 0.0},
+	))
 }
 
 func TestManhattanDistance(t *testing.T) {
-	a := []float64{1.0, 1.0}
-	b := []float64{0.0, 0.0}
+	require.Equal(t, 2.0, ManhattanDistance(
+		[]float64{1.0, 1.0},
+		[]float64{0.0, 0.0},
+	))
 
-	require.Equal(t, 2.0, ManhattanDistance(a, b))
+	require.Equal(t, 1.0, ManhattanDistance(
+		[]float64{0.0, 1.0},
+		[]float64{0.0, 0.0},
+	))
 }
 
 // other functions are tested using the plot
