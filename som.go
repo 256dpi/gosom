@@ -6,14 +6,7 @@ import (
 	"math/rand"
 )
 
-type Initialization int
-
-const(
-	ZeroInitialization Initialization = iota
-	RandomInitialization
-	RandomDataInitialization
-)
-
+// SOM holds an instance of a self organizing map.
 type SOM struct {
 	Width int
 	Height int
@@ -26,6 +19,7 @@ type SOM struct {
 	NeighborhoodFunction NeighborhoodFunction
 }
 
+// NewSOM creates and returns a new self organizing map.
 func NewSOM(data [][]float64, width, height int) *SOM {
 	som := &SOM{
 		Width: width,
@@ -34,49 +28,48 @@ func NewSOM(data [][]float64, width, height int) *SOM {
 		Nodes: make([]*Node, width * height),
 	}
 
+	d := len(som.Data[0])
+
 	// create nodes
 	for i:=0; i<som.Height; i++ {
 		for j:=0; j<som.Width; j++ {
 			k := i * som.Height + j
-			som.Nodes[k] = NewNode(j, i)
+			som.Nodes[k] = NewNode(j, i, d)
 		}
 	}
 
 	return som
 }
 
-// Prepare initializes the nodes using the selected Initialization method.
-func (som *SOM) Prepare(initialization Initialization) {
+func (som *SOM) InitializeWithRandomValues() {
 	n := len(som.Data)
 	d := len(som.Data[0])
 
-	switch initialization {
-	case ZeroInitialization:
-		for _, n := range som.Nodes {
-			n.Weights = make([]float64, d)
-		}
-	case RandomInitialization:
-		min := make([]float64, d)
-		max := make([]float64, d)
+	min := make([]float64, d)
+	max := make([]float64, d)
 
-		for j:=0; j<n; j++ {
-			for i:=0; i<d; i++ {
-				min[i] = math.Min(min[i], som.Data[j][i])
-				max[i] = math.Max(max[i], som.Data[j][i])
-			}
+	for j:=0; j<n; j++ {
+		for i:=0; i<d; i++ {
+			min[i] = math.Min(min[i], som.Data[j][i])
+			max[i] = math.Max(max[i], som.Data[j][i])
 		}
+	}
 
-		for _, node := range som.Nodes {
-			node.Weights = make([]float64, d)
-			for i:=0; i<d; i++ {
-				node.Weights[i] = rand.Float64() * (max[i] - min[i]) + min[i]
-			}
+	for _, node := range som.Nodes {
+		node.Weights = make([]float64, d)
+		for i:=0; i<d; i++ {
+			node.Weights[i] = rand.Float64() * (max[i] - min[i]) + min[i]
 		}
-	case RandomDataInitialization:
-		for _, node := range som.Nodes {
-			node.Weights = make([]float64, d)
-			copy(node.Weights, som.Data[rand.Intn(n-1)])
-		}
+	}
+}
+
+func (som *SOM) InitializeWithRandomDataPoints() {
+	n := len(som.Data)
+	d := len(som.Data[0])
+
+	for _, node := range som.Nodes {
+		node.Weights = make([]float64, d)
+		copy(node.Weights, som.Data[rand.Intn(n-1)])
 	}
 }
 
