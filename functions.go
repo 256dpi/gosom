@@ -43,11 +43,12 @@ func SoftCooling(input float64) (output float64) {
 }
 
 func MediumCooling(input float64) (output float64) {
-	return 1.0 * math.Pow(0.005 / 1.0, input)
+	return 1.005 * math.Pow(0.005 / 1.0, input) - 0.005
 }
 
 func HardCooling(input float64) (output float64) {
-	return 1.0 / (1 + 100 * input)
+	d := 1.0 / 101.0
+	return (1.0 + d) / (1 + 100 * input) - d
 }
 
 func BubbleNeighborhood(distance float64) (influence float64) {
