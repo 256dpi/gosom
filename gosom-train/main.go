@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	
+
 	"github.com/256dpi/gosom"
 )
 
@@ -16,7 +16,7 @@ var data = [][]float64{
 
 func main() {
 	som := gosom.NewSOM(data, 8, 8)
-	som.Prepare(gosom.ZeroInitialization)
+	som.Prepare(gosom.RandomDataInitialization)
 	som.Train(1000, 0.5)
 	fmt.Println(som)
 

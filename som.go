@@ -1,6 +1,9 @@
 package gosom
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 
 type Initialization int
 
@@ -54,7 +57,10 @@ func (som *SOM) Prepare(initialization Initialization) {
 
 		}*/
 	case RandomDataInitialization:
-
+		for _, n := range som.Nodes {
+			n.Weights = make([]float64, d)
+			copy(n.Weights, som.Data[rand.Intn(len(som.Data)-1)])
+		}
 	}
 }
 
