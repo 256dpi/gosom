@@ -2,52 +2,82 @@ package gosom
 
 import "math"
 
-type DistanceFunction func(a, b []float64) float64
-type CoolingFunction func(start, end float64, steps, step int) float64
-type NeighborhoodFunction func(distance float64, radius float64) float64
+// A DistanceFunction calculates and returns the distance between to points.
+type DistanceFunction func(from, to []float64) (distance float64)
 
-func EuclideanDistance(a, b []float64) float64 {
+// A CoolingFunction returns the cooling alpha [1..0] for an input value [0..1].
+type CoolingFunction func(input float64) (output float64)
+
+// A NeighborhoodFunction returns the influence [1..0] of a distance [0..1].
+type NeighborhoodFunction func(distance float64) (influence float64)
+
+func EuclideanDistance(from, to []float64) (distance float64) {
 	d := 0.0
-	l := Min(len(a), len(b))
+	l := Min(len(from), len(to))
 
 	for i:=0; i<l; i++ {
-		d += (a[i] - b[i]) * (a[i] - b[i])
+		d += (from[i] - to[i]) * (from[i] - to[i])
 	}
 
 	return math.Sqrt(d)
 }
 
-func ManhattanDistance(a, b []float64) float64 {
+func ManhattanDistance(from, to []float64) (distance float64) {
 	d := 0.0
-	l := Min(len(a), len(b))
+	l := Min(len(from), len(to))
 
 	for i:=0; i<l; i++ {
-		d += math.Abs(b[i]-a[i])
+		d += math.Abs(to[i]- from[i])
 	}
 
 	return d
 }
 
-func LinearCooling(start, end, steps, step float64) float64 {
-	return start - (float64(step) * (start - end) / float64(steps))
+func LinearCooling(input float64) (output float64) {
+	return 1.0 - input
 }
 
-func ExponentialCooling(start, end, steps, step float64) float64 {
-	//TODO: function hacked (+- 0.2) (is there a better implementation?)
-	d := -math.Log((end + 0.2) / (start + 0.2)) / float64(steps)
-	return ((start + 0.2) * math.Exp(-float64(step) * d)) - 0.2
+func SoftCooling(input float64) (output float64) {
+	d := -math.Log(0.2 / 1.2)
+	return (1.2 * math.Exp(-input * d)) - 0.2
 }
 
-func BubbleNeighborhood(distance float64, radius float64) float64 {
-	return 1.0
+func MediumCooling(input float64) (output float64) {
+	return 1.0 * math.Pow(0.005 / 1.0, input)
 }
 
-func ConeNeighborhood(distance float64, radius float64) float64 {
-	return (radius - math.Abs(distance)) / radius
+func HardCooling(input float64) (output float64) {
+	return 1.0 / (1 + 100 * input)
 }
 
-func GaussianNeighborhood(distance float64, radius float64) float64 {
-	stdDev := 2.0;
-	norm := (2.0 * math.Pow((radius + 1.0), 2.0)) / math.Pow(stdDev, 2.0);
+func BubbleNeighborhood(distance float64) (influence float64) {
+	d := math.Abs(distance)
+
+	if d < 1.0 {
+		return 1.0
+	} else {
+		return 0.0
+	}
+}
+
+func ConeNeighborhood(distance float64) (influence float64) {
+	d := math.Abs(distance)
+
+	if d < 1.0 {
+		return (1.0 - d) / 1.0
+	} else {
+		return 0.0
+	}
+}
+
+func GaussianNeighborhood(distance float64) (influence float64) {
+	stdDev := 3.5;
+	norm := (2.0 * math.Pow(2.0, 2.0)) / math.Pow(stdDev, 2.0);
 	return math.Exp((-distance * distance) / norm);
+}
+
+func MexicanHatNeighborhood(distance float64) (influence float64) {
+	norm := 3.0 / (2.0)
+	square := math.Pow(distance * norm, 2.0)
+	return (1.0 - square) * math.Exp(-square)
 }
