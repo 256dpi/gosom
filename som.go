@@ -4,6 +4,11 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"image"
+	"image/color"
+
+	"github.com/llgcode/draw2d/draw2dimg"
+	"github.com/llgcode/draw2d/draw2dkit"
 )
 
 // SOM holds an instance of a self organizing map.
@@ -68,7 +73,7 @@ func (som *SOM) InitializeWithRandomValues() {
 func (som *SOM) InitializeWithRandomDataPoints() {
 	for _, node := range som.Nodes {
 		node.Weights = make([]float64, som.Columns)
-		copy(node.Weights, som.Data[rand.Intn(som.Rows-1)])
+		copy(node.Weights, som.Data[rand.Intn(som.Rows)])
 	}
 }
 
@@ -94,7 +99,7 @@ func (som *SOM) Closest(input []float64) *Node {
 
 	if len(n) > 1 {
 		// return random winner
-		return n[rand.Intn(len(n)-1)]
+		return n[rand.Intn(len(n))]
 	}
 
 	return n[0]
@@ -133,7 +138,7 @@ func (som *SOM) Train(steps int, initialLearningRate float64) {
 		radius := initialRadius * som.CoolingFunction(s)
 
 		// pick random input point
-		dataPoint := som.Data[rand.Intn(som.Rows-1)]
+		dataPoint := som.Data[rand.Intn(som.Rows)]
 
 		// get closest node to input
 		winningNode := som.Closest(dataPoint);
@@ -193,4 +198,26 @@ func (som *SOM) String() string {
 	}
 
 	return s
+}
+
+func (som *SOM) DimensionImages(nodeWidth int) []image.Image {
+	images := make([]image.Image, som.Columns)
+
+	for i:=0; i<som.Columns; i++ {
+		img := image.NewRGBA(image.Rect(0, 0, som.Width*nodeWidth, som.Height*nodeWidth))
+		gc := draw2dimg.NewGraphicContext(img)
+
+		for _, node := range som.Nodes {
+			gc.SetFillColor(&color.Gray{ Y: uint8(node.Weights[i] * 64) })
+
+			x := node.Position[0] * float64(nodeWidth)
+			y := node.Position[1] * float64(nodeWidth)
+			draw2dkit.Rectangle(gc, x, y, x+float64(nodeWidth), y+float64(nodeWidth))
+			gc.Fill()
+		}
+
+		images[i] = img
+	}
+
+	return images
 }
