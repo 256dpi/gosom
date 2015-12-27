@@ -35,7 +35,7 @@ func NewSOM(width, height int) *SOM {
 		Height: height,
 		Nodes: make([]*Node, width * height),
 		CoolingFunction: LinearCooling,
-		DistanceFunction: ManhattanDistance,
+		DistanceFunction: EuclideanDistance,
 		NeighborhoodFunction: ConeNeighborhood,
 	}
 }
