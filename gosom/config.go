@@ -40,7 +40,7 @@ Usage:
   gosom train <file> <data> [-l <lr> -t <ts> -d <df> -n <nf> -c <cf>]
   gosom classify <file> <input> [-d <df>]
   gosom interpolate <file> <input> [-d <df> -n <nf> -w -k <nn>]
-  gosom plot <file> <directory> [-s <ns>]
+  gosom plot <file> <data> <directory> [-s <ns>]
   gosom -h
   gosom -v
   gosom -f

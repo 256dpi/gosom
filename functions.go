@@ -27,7 +27,7 @@ func ManhattanDistance(from, to []float64) (distance float64) {
 	l := Min(len(from), len(to))
 
 	for i:=0; i<l; i++ {
-		d += math.Abs(to[i]- from[i])
+		d += math.Abs(to[i] - from[i])
 	}
 
 	return d

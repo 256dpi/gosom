@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"encoding/csv"
 	"encoding/json"
 
 	"github.com/256dpi/gosom"
@@ -31,13 +30,13 @@ func main() {
 
 func doPrepare(config *config) {
 	som := gosom.NewSOM(config.width, config.height)
-	som.LoadData(readData(config.data))
+	ds := readDataSet(config.data)
 
 	switch config.initialization {
 	case "random":
-		som.InitializeWithRandomValues()
+		som.InitializeWithRandomValues(ds)
 	case "datapoints":
-		som.InitializeWithDataPoints()
+		som.InitializeWithDataPoints(ds)
 	}
 
 	err := gosom.Store(som, config.file)
@@ -58,11 +57,11 @@ func doTrain(config *config) {
 	som.NeighborhoodFunction = config.neighborhoodFunction
 	som.CoolingFunction = config.coolingFunction
 
-	som.LoadData(readData(config.data))
+	ds := readDataSet(config.data)
 	bar := pb.StartNew(config.trainingSteps)
 
 	for step:=0; step<config.trainingSteps; step++ {
-		som.Step(step, config.trainingSteps, config.initialLearningRate)
+		som.Step(ds, step, config.trainingSteps, config.initialLearningRate)
 		bar.Increment()
 	}
 
@@ -82,7 +81,8 @@ func doPlot(config *config) {
 		panic(err)
 	}
 
-	images := som.DimensionImages(config.size)
+	ds := readDataSet(config.data)
+	images := som.DimensionImages(ds, config.size)
 
 	for i, img := range images {
 		file := fmt.Sprintf("%s/dimension-%d.png", config.directory, i)
@@ -134,7 +134,7 @@ func doFunctions(){
 	plotNeighborhoodFunctions("neighborhood.png")
 }
 
-func readData(file string) [][]float64 {
+func readDataSet(file string) *gosom.DataSet {
 	handle, err := os.Open(file)
 	if err != nil {
 		panic(err)
@@ -142,25 +142,12 @@ func readData(file string) [][]float64 {
 
 	defer handle.Close()
 
-	reader := csv.NewReader(handle)
-	reader.FieldsPerRecord = -1
-
-	data, err := reader.ReadAll()
+	ds, err := gosom.DataSetFromCSV(handle)
 	if err != nil {
 		panic(err)
 	}
 
-	floats := make([][]float64, len(data))
-
-	for i, row := range data {
-		floats[i] = make([]float64, len(row))
-
-		for j, col := range row {
-			floats[i][j] = getFloat(col)
-		}
-	}
-
-	return floats
+	return ds
 }
 
 func readInput(input string) []float64 {

@@ -2,7 +2,6 @@ package gosom
 
 import (
 	"fmt"
-	"math"
 	"math/rand"
 	"image"
 	"image/color"
@@ -16,12 +15,6 @@ type SOM struct {
 	Width int
 	Height int
 	Nodes []*Node
-
-	Data [][]float64
-	Rows int
-	Columns int
-	Min []float64
-	Max []float64
 
 	CoolingFunction CoolingFunction `json:"-"`
 	DistanceFunction DistanceFunction `json:"-"`
@@ -40,53 +33,36 @@ func NewSOM(width, height int) *SOM {
 	}
 }
 
-func (som *SOM) LoadData(data [][]float64) {
-	som.Data = data
-	som.Rows = len(data)
-	som.Columns = len(data[0])
-	som.Min = make([]float64, som.Columns)
-	som.Max = make([]float64, som.Columns)
-
-	// find min and max
-	for j:=0; j<som.Rows; j++ {
-		for i:=0; i<som.Columns; i++ {
-			som.Min[i] = math.Min(som.Min[i], som.Data[j][i])
-			som.Max[i] = math.Max(som.Max[i], som.Data[j][i])
-		}
-	}
-}
-
-func (som *SOM) createNodes() {
+func (som *SOM) createNodes(dimensions int) {
 	for i:=0; i<som.Height; i++ {
 		for j:=0; j<som.Width; j++ {
 			k := i * som.Width + j
-			som.Nodes[k] = NewNode(j, i, som.Columns)
+			som.Nodes[k] = NewNode(j, i, dimensions)
 		}
 	}
 }
 
-func (som *SOM) InitializeWithRandomValues() {
-	som.createNodes()
+func (som *SOM) InitializeWithRandomValues(dataSet *DataSet) {
+	som.createNodes(dataSet.Dimensions)
 
 	for _, node := range som.Nodes {
-		node.Weights = make([]float64, som.Columns)
-		for i:=0; i<som.Columns; i++ {
-			node.Weights[i] = rand.Float64() * (som.Max[i] - som.Min[i]) + som.Min[i]
+		for i:=0; i<dataSet.Dimensions; i++ {
+			r := (dataSet.Maximums[i] - dataSet.Minimums[i]) + dataSet.Minimums[i]
+			node.Weights[i] = r * rand.Float64()
 		}
 	}
 }
 
-func (som *SOM) InitializeWithDataPoints() {
-	som.createNodes()
+func (som *SOM) InitializeWithDataPoints(dataSet *DataSet) {
+	som.createNodes(dataSet.Dimensions)
 
 	for _, node := range som.Nodes {
-		node.Weights = make([]float64, som.Columns)
-		copy(node.Weights, som.Data[rand.Intn(som.Rows)])
+		copy(node.Weights, dataSet.RandomDataPoint())
 	}
 }
 
 func (som *SOM) Closest(input []float64) *Node {
-	n := make([]*Node, 0, 1)
+	nodes := make([]*Node, 0)
 
 	// get initial distance
 	t := som.DistanceFunction(input, som.Nodes[0].Weights)
@@ -98,19 +74,19 @@ func (som *SOM) Closest(input []float64) *Node {
 		if(d < t) {
 			// save distance, clear array and add winner
 			t = d
-			n = append([]*Node{}, node)
-		} else if(d <= t) {
+			nodes = append([]*Node{}, node)
+		} else if(d == t) {
 			// add winner
-			n = append(n, node)
+			nodes = append(nodes, node)
 		}
 	}
 
-	if len(n) > 1 {
+	if len(nodes) > 1 {
 		// return random winner
-		return n[rand.Intn(len(n))]
+		return nodes[rand.Intn(len(nodes))]
 	}
 
-	return n[0]
+	return nodes[0]
 }
 
 func (som *SOM) Neighbors(input []float64, K int) []*Node {
@@ -133,7 +109,7 @@ func (som *SOM) Neighbors(input []float64, K int) []*Node {
 	return neighbors
 }
 
-func (som *SOM) Step(step, steps int, initialLearningRate float64) {
+func (som *SOM) Step(dataSet *DataSet, step, steps int, initialLearningRate float64) {
 	// calculate position
 	pos := float64(step) / float64(steps)
 
@@ -144,11 +120,8 @@ func (som *SOM) Step(step, steps int, initialLearningRate float64) {
 	initialRadius := float64(Max(som.Width, som.Height)) / 2.0
 	radius := initialRadius * som.CoolingFunction(pos)
 
-	// pick random input point
-	dataPoint := som.Data[rand.Intn(som.Rows)]
-
 	// get closest node to input
-	winningNode := som.Closest(dataPoint)
+	winningNode := som.Closest(dataSet.RandomDataPoint())
 
 	for _, node := range som.Nodes {
 		// calculate distance to winner
@@ -165,31 +138,31 @@ func (som *SOM) Step(step, steps int, initialLearningRate float64) {
 	}
 }
 
-func (som *SOM) Train(steps int, initialLearningRate float64) {
+func (som *SOM) Train(dataSet *DataSet, steps int, initialLearningRate float64) {
 	for step:=0; step<steps; step++ {
-		som.Step(step, steps, initialLearningRate)
+		som.Step(dataSet, step, steps, initialLearningRate)
 	}
 }
 
 func (som *SOM) Classify(input []float64) []float64 {
-	o := make([]float64, som.Columns)
+	o := make([]float64, som.Dimensions())
 	copy(o, som.Closest(input).Weights)
 	return o
 }
 
 func (som *SOM) Interpolate(input []float64, K int) []float64 {
 	neighbors := som.Neighbors(input, K)
-	total := make([]float64, som.Columns)
+	total := make([]float64, som.Dimensions())
 
 	// add up all values
 	for i:=0; i<len(neighbors); i++ {
-		for j:=0; j<som.Columns; j++ {
+		for j:=0; j<som.Dimensions(); j++ {
 			total[j] += neighbors[i].Weights[j]
 		}
 	}
 
 	// calculate average
-	for i:=0; i<som.Columns; i++ {
+	for i:=0; i<som.Dimensions(); i++ {
 		total[i] = total[i] / float64(K)
 	}
 
@@ -199,8 +172,8 @@ func (som *SOM) Interpolate(input []float64, K int) []float64 {
 func (som *SOM) WeightedInterpolate(input []float64, K int) []float64 {
 	neighbors := som.Neighbors(input, K)
 	neighborWeights := make([]float64, K)
-	total := make([]float64, som.Columns)
-	sumWeights := make([]float64, som.Columns)
+	total := make([]float64, som.Dimensions())
+	sumWeights := make([]float64, som.Dimensions())
 
 	// calculate weights for neighbors
 	radius := som.DistanceFunction(input, neighbors[K-1].Weights)
@@ -211,14 +184,14 @@ func (som *SOM) WeightedInterpolate(input []float64, K int) []float64 {
 
 	// add up all values
 	for i:=0; i<len(neighbors); i++ {
-		for j:=0; j<som.Columns; j++ {
+		for j:=0; j<som.Dimensions(); j++ {
 			total[j] += neighbors[i].Weights[j] * neighborWeights[i]
 			sumWeights[j] += neighborWeights[i]
 		}
 	}
 
 	// calculate average
-	for i:=0; i<som.Columns; i++ {
+	for i:=0; i<som.Dimensions(); i++ {
 		total[i] = total[i] / sumWeights[i]
 	}
 
@@ -241,15 +214,16 @@ func (som *SOM) String() string {
 	return s
 }
 
-func (som *SOM) DimensionImages(nodeWidth int) []image.Image {
-	images := make([]image.Image, som.Columns)
+func (som *SOM) DimensionImages(dataSet *DataSet, nodeWidth int) []image.Image {
+	images := make([]image.Image, som.Dimensions())
 
-	for i:=0; i<som.Columns; i++ {
+	for i:=0; i<som.Dimensions(); i++ {
 		img := image.NewRGBA(image.Rect(0, 0, som.Width*nodeWidth, som.Height*nodeWidth))
 		gc := draw2dimg.NewGraphicContext(img)
 
 		for _, node := range som.Nodes {
-			g := uint8(((node.Weights[i] - som.Min[i]) / (som.Max[i] - som.Min[i])) * 255)
+			r := dataSet.Maximums[i] - dataSet.Minimums[i]
+			g := uint8(((node.Weights[i] - dataSet.Minimums[i]) / r) * 255)
 			gc.SetFillColor(&color.Gray{ Y: g })
 
 			x := node.Position[0] * float64(nodeWidth)
@@ -262,4 +236,8 @@ func (som *SOM) DimensionImages(nodeWidth int) []image.Image {
 	}
 
 	return images
+}
+
+func (som *SOM) Dimensions() int {
+	return len(som.Nodes[0].Weights)
 }
