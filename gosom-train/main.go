@@ -17,7 +17,7 @@ var data = [][]float64{
 
 func main() {
 	som := gosom.NewSOM(data, 64, 64)
-	som.InitializeWithRandomDataPoints()
+	som.InitializeWithDataPoints()
 	som.Train(10000, 0.5)
 
 	fmt.Printf("3.5: %f\n", som.Classify([]float64{0.5})[1])

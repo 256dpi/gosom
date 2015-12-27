@@ -8,17 +8,7 @@ import (
 	"github.com/256dpi/gosom"
 )
 
-func main() {
-	println("plotting cooling functions...")
-	plotCoolingFunctions()
-
-	println("plotting neighborhood functions...")
-	plotNeighborhoodFunctions()
-
-	println("finished!")
-}
-
-func plotCoolingFunctions() {
+func plotCoolingFunctions(file string) {
 	p, err := plot.New()
 	if err != nil {
 		panic(err)
@@ -63,12 +53,12 @@ func plotCoolingFunctions() {
 	p.Y.Min = 0.0
 	p.Y.Max = 1.0
 
-	if err := p.Save(500, 500, "cooling.png"); err != nil {
+	if err := p.Save(500, 500, file); err != nil {
 		panic(err)
 	}
 }
 
-func plotNeighborhoodFunctions() {
+func plotNeighborhoodFunctions(file string) {
 	p, err := plot.New()
 	if err != nil {
 		panic(err)
@@ -113,7 +103,7 @@ func plotNeighborhoodFunctions() {
 	p.Y.Min = -0.2
 	p.Y.Max = 1.0
 
-	if err := p.Save(500, 500, "neighborhood.png"); err != nil {
+	if err := p.Save(500, 500, file); err != nil {
 		panic(err)
 	}
 }

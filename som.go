@@ -13,19 +13,19 @@ import (
 
 // SOM holds an instance of a self organizing map.
 type SOM struct {
-	Width int
-	Height int
-	Nodes []*Node
+	Width int `json:"width"`
+	Height int `json:"height"`
+	Nodes []*Node `json:"nodes"`
 
-	Data [][]float64
-	Rows int
-	Columns int
-	Min []float64
-	Max []float64
+	Data [][]float64 `json:"data"`
+	Rows int `json:"rows"`
+	Columns int `json:"columns"`
+	Min []float64 `json:"-"`
+	Max []float64 `json:"-"`
 
-	CoolingFunction CoolingFunction
-	DistanceFunction DistanceFunction
-	NeighborhoodFunction NeighborhoodFunction
+	CoolingFunction CoolingFunction `json:"-"`
+	DistanceFunction DistanceFunction `json:"-"`
+	NeighborhoodFunction NeighborhoodFunction `json:"-"`
 }
 
 // NewSOM creates and returns a new self organizing map.
@@ -45,7 +45,7 @@ func NewSOM(data [][]float64, width, height int) *SOM {
 	// create nodes
 	for i:=0; i<som.Height; i++ {
 		for j:=0; j<som.Width; j++ {
-			k := i * som.Height + j
+			k := i * som.Width + j
 			som.Nodes[k] = NewNode(j, i, som.Columns)
 		}
 	}
@@ -73,7 +73,7 @@ func (som *SOM) InitializeWithRandomValues() {
 	}
 }
 
-func (som *SOM) InitializeWithRandomDataPoints() {
+func (som *SOM) InitializeWithDataPoints() {
 	for _, node := range som.Nodes {
 		node.Weights = make([]float64, som.Columns)
 		copy(node.Weights, som.Data[rand.Intn(som.Rows)])

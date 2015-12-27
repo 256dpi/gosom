@@ -3,8 +3,8 @@ package gosom
 import "sort"
 
 type Node struct {
-	Position []float64
-	Weights []float64
+	Position []float64 `json:"position"`
+	Weights []float64 `json:"weights"`
 }
 
 func NewNode(x, y, dimensions int) *Node {
