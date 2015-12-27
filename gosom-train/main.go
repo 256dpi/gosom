@@ -18,10 +18,7 @@ var data = [][]float64{
 func main() {
 	som := gosom.NewSOM(data, 64, 64)
 	som.InitializeWithRandomDataPoints()
-	som.DistanceFunction = gosom.ManhattanDistance
-
 	som.Train(10000, 0.5)
-	fmt.Println(som)
 
 	fmt.Printf("3.5: %f\n", som.Classify([]float64{0.5})[1])
 	fmt.Printf("2.5: %f\n", som.Classify([]float64{1.5})[1])

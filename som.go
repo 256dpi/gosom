@@ -38,7 +38,7 @@ func NewSOM(data [][]float64, width, height int) *SOM {
 		Rows: len(data),
 		Columns: len(data[0]),
 		CoolingFunction: LinearCooling,
-		DistanceFunction: EuclideanDistance,
+		DistanceFunction: ManhattanDistance,
 		NeighborhoodFunction: ConeNeighborhood,
 	}
 
