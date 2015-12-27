@@ -78,7 +78,7 @@ func GaussianNeighborhood(distance float64) (influence float64) {
 }
 
 func MexicanHatNeighborhood(distance float64) (influence float64) {
-	norm := 3.0 / (2.0)
+	norm := 3.0 / 2.0
 	square := math.Pow(distance * norm, 2.0)
 	return (1.0 - square) * math.Exp(-square)
 }
