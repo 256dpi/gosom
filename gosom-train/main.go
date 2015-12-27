@@ -18,9 +18,7 @@ var data = [][]float64{
 func main() {
 	som := gosom.NewSOM(data, 64, 64)
 	som.InitializeWithRandomDataPoints()
-	//som.DistanceFunction = gosom.ManhattanDistance
-	//som.CoolingFunction = gosom.MediumCooling
-	//som.NeighborhoodFunction = gosom.GaussianNeighborhood
+	som.DistanceFunction = gosom.ManhattanDistance
 
 	som.Train(10000, 0.5)
 	fmt.Println(som)
@@ -30,10 +28,10 @@ func main() {
 	fmt.Printf("1.5: %f\n", som.Classify([]float64{2.5})[1])
 	fmt.Printf("0.5: %f\n\n", som.Classify([]float64{3.5})[1])
 
-	fmt.Printf("3.5: %f\n", som.Interpolate([]float64{0.5}, 16)[1])
-	fmt.Printf("2.5: %f\n", som.Interpolate([]float64{1.5}, 16)[1])
-	fmt.Printf("1.5: %f\n", som.Interpolate([]float64{2.5}, 16)[1])
-	fmt.Printf("0.5: %f\n", som.Interpolate([]float64{3.5}, 16)[1])
+	fmt.Printf("3.5: %f\n", som.Interpolate([]float64{0.5}, 8)[1])
+	fmt.Printf("2.5: %f\n", som.Interpolate([]float64{1.5}, 8)[1])
+	fmt.Printf("1.5: %f\n", som.Interpolate([]float64{2.5}, 8)[1])
+	fmt.Printf("0.5: %f\n", som.Interpolate([]float64{3.5}, 8)[1])
 
 	images := som.DimensionImages(5)
 

@@ -20,6 +20,8 @@ type SOM struct {
 	Data [][]float64
 	Rows int
 	Columns int
+	Min []float64
+	Max []float64
 
 	CoolingFunction CoolingFunction
 	DistanceFunction DistanceFunction
@@ -48,24 +50,25 @@ func NewSOM(data [][]float64, width, height int) *SOM {
 		}
 	}
 
+	som.Min = make([]float64, som.Columns)
+	som.Max = make([]float64, som.Columns)
+
+	// find min and max
+	for j:=0; j<som.Rows; j++ {
+		for i:=0; i<som.Columns; i++ {
+			som.Min[i] = math.Min(som.Min[i], som.Data[j][i])
+			som.Max[i] = math.Max(som.Max[i], som.Data[j][i])
+		}
+	}
+
 	return som
 }
 
 func (som *SOM) InitializeWithRandomValues() {
-	min := make([]float64, som.Columns)
-	max := make([]float64, som.Columns)
-
-	for j:=0; j<som.Rows; j++ {
-		for i:=0; i<som.Columns; i++ {
-			min[i] = math.Min(min[i], som.Data[j][i])
-			max[i] = math.Max(max[i], som.Data[j][i])
-		}
-	}
-
 	for _, node := range som.Nodes {
 		node.Weights = make([]float64, som.Columns)
 		for i:=0; i<som.Columns; i++ {
-			node.Weights[i] = rand.Float64() * (max[i] - min[i]) + min[i]
+			node.Weights[i] = rand.Float64() * (som.Max[i] - som.Min[i]) + som.Min[i]
 		}
 	}
 }
@@ -208,7 +211,8 @@ func (som *SOM) DimensionImages(nodeWidth int) []image.Image {
 		gc := draw2dimg.NewGraphicContext(img)
 
 		for _, node := range som.Nodes {
-			gc.SetFillColor(&color.Gray{ Y: uint8(node.Weights[i] * 64) })
+			g := uint8(((node.Weights[i] - som.Min[i]) / (som.Max[i] - som.Min[i])) * 255)
+			gc.SetFillColor(&color.Gray{ Y: g })
 
 			x := node.Position[0] * float64(nodeWidth)
 			y := node.Position[1] * float64(nodeWidth)
