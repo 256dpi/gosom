@@ -66,7 +66,7 @@ func (ds *DataSet)RandomDataPoint() []float64 {
 	return ds.Data[rand.Intn(ds.Length)]
 }
 
-func DataSetFromCSV(source io.Reader) (*DataSet, error) {
+func LoadDataSetFromCSV(source io.Reader) (*DataSet, error) {
 	reader := csv.NewReader(source)
 	reader.FieldsPerRecord = -1
 
@@ -94,7 +94,7 @@ func DataSetFromCSV(source io.Reader) (*DataSet, error) {
 	return NewDataSet(floats), nil
 }
 
-func DataSetFromJSON(source io.Reader) (*DataSet, error) {
+func LoadDataSetFromJSON(source io.Reader) (*DataSet, error) {
 	reader := json.NewDecoder(source)
 
 	floats := make([][]float64, 0)

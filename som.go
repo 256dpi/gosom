@@ -1,10 +1,12 @@
 package gosom
 
 import (
+	"io"
 	"fmt"
 	"math/rand"
 	"image"
 	"image/color"
+	"encoding/json"
 
 	"github.com/llgcode/draw2d/draw2dimg"
 	"github.com/llgcode/draw2d/draw2dkit"
@@ -31,6 +33,18 @@ func NewSOM(width, height int) *SOM {
 		DistanceFunction: EuclideanDistance,
 		NeighborhoodFunction: ConeNeighborhood,
 	}
+}
+
+func LoadSOMFromJSON(source io.Reader) (*SOM, error) {
+	reader := json.NewDecoder(source)
+	som := NewSOM(0, 0)
+
+	err := reader.Decode(som)
+	if err != nil {
+		return nil, err
+	}
+
+	return som, nil
 }
 
 func (som *SOM) createNodes(dimensions int) {
@@ -240,4 +254,9 @@ func (som *SOM) DimensionImages(dataSet *DataSet, nodeWidth int) []image.Image {
 
 func (som *SOM) Dimensions() int {
 	return len(som.Nodes[0].Weights)
+}
+
+func (som *SOM) SaveAsJSON(destination io.Writer) (error) {
+	writer := json.NewEncoder(destination)
+	return writer.Encode(som)
 }

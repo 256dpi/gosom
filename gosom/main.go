@@ -30,7 +30,7 @@ func main() {
 
 func doPrepare(config *config) {
 	som := gosom.NewSOM(config.width, config.height)
-	ds := readDataSet(config.data)
+	ds := loadDataSet(config.data)
 
 	switch config.initialization {
 	case "random":
@@ -39,25 +39,17 @@ func doPrepare(config *config) {
 		som.InitializeWithDataPoints(ds)
 	}
 
-	err := gosom.Store(som, config.file)
-	if err != nil {
-		panic(err)
-	}
-
+	storeSOM(config.file, som)
 	fmt.Printf("Prepared new SOM and saved to '%s'.\n", config.file)
 }
 
 func doTrain(config *config) {
-	som, err := gosom.Load(config.file)
-	if err != nil {
-		panic(err)
-	}
-
+	som := loadSOM(config.file)
 	som.DistanceFunction = config.distanceFunction
 	som.NeighborhoodFunction = config.neighborhoodFunction
 	som.CoolingFunction = config.coolingFunction
 
-	ds := readDataSet(config.data)
+	ds := loadDataSet(config.data)
 	bar := pb.StartNew(config.trainingSteps)
 
 	for step:=0; step<config.trainingSteps; step++ {
@@ -65,23 +57,16 @@ func doTrain(config *config) {
 		bar.Increment()
 	}
 
-	bar.FinishPrint("Done!")
+	bar.Finish()
 
-	err = gosom.Store(som, config.file)
-	if err != nil {
-		panic(err)
-	}
-
+	storeSOM(config.file, som)
 	fmt.Printf("Trained SOM and saved to '%s'.\n", config.file)
 }
 
 func doPlot(config *config) {
-	som, err := gosom.Load(config.file)
-	if err != nil {
-		panic(err)
-	}
+	som := loadSOM(config.file)
+	ds := loadDataSet(config.data)
 
-	ds := readDataSet(config.data)
 	images := som.DimensionImages(ds, config.size)
 
 	for i, img := range images {
@@ -97,11 +82,7 @@ func doPlot(config *config) {
 }
 
 func doClassification(config *config) {
-	som, err := gosom.Load(config.file)
-	if err != nil {
-		panic(err)
-	}
-
+	som := loadSOM(config.file)
 	som.DistanceFunction = config.distanceFunction
 
 	input := readInput(config.input)
@@ -109,11 +90,7 @@ func doClassification(config *config) {
 }
 
 func doInterpolation(config *config) {
-	som, err := gosom.Load(config.file)
-	if err != nil {
-		panic(err)
-	}
-
+	som := loadSOM(config.file)
 	som.DistanceFunction = config.distanceFunction
 	som.NeighborhoodFunction = config.neighborhoodFunction
 
@@ -134,7 +111,7 @@ func doFunctions(){
 	plotNeighborhoodFunctions("neighborhood.png")
 }
 
-func readDataSet(file string) *gosom.DataSet {
+func loadDataSet(file string) *gosom.DataSet {
 	handle, err := os.Open(file)
 	if err != nil {
 		panic(err)
@@ -142,12 +119,42 @@ func readDataSet(file string) *gosom.DataSet {
 
 	defer handle.Close()
 
-	ds, err := gosom.DataSetFromCSV(handle)
+	ds, err := gosom.LoadDataSetFromCSV(handle)
 	if err != nil {
 		panic(err)
 	}
 
 	return ds
+}
+
+func loadSOM(file string) *gosom.SOM {
+	handle, err := os.Open(file)
+	if err != nil {
+		panic(err)
+	}
+
+	defer handle.Close()
+
+	som, err := gosom.LoadSOMFromJSON(handle)
+	if err != nil {
+		panic(err)
+	}
+
+	return som
+}
+
+func storeSOM(file string, som *gosom.SOM) {
+	handle, err := os.Open(file)
+	if err != nil {
+		panic(err)
+	}
+
+	defer handle.Close()
+
+	err = som.SaveAsJSON(handle)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func readInput(input string) []float64 {

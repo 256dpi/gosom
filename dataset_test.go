@@ -24,21 +24,21 @@ func TestDataSet(t *testing.T) {
 	require.Equal(t, 1.0, ds.Maximum)
 }
 
-func TestDataSetFromCSV(t *testing.T) {
+func TestLoadDataSetFromCSV(t *testing.T) {
 	csv := "1.0,0.5,0.0\n0.0,0.5,1.0"
 	reader := strings.NewReader(csv)
 
-	ds, err := DataSetFromCSV(reader)
+	ds, err := LoadDataSetFromCSV(reader)
 
 	require.NoError(t, err)
 	require.Equal(t, slice, ds.Data)
 }
 
-func TestDataSetFromJSON(t *testing.T) {
+func TestLoadDataSetFromJSON(t *testing.T) {
 	json := "[[1.0,0.5,0.0],[0.0,0.5,1.0]]"
 	reader := strings.NewReader(json)
 
-	ds, err := DataSetFromJSON(reader)
+	ds, err := LoadDataSetFromJSON(reader)
 
 	require.NoError(t, err)
 	require.Equal(t, slice, ds.Data)
