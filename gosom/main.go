@@ -54,6 +54,10 @@ func doTrain(config *config) {
 		panic(err)
 	}
 
+	som.DistanceFunction = config.distanceFunction
+	som.NeighborhoodFunction = config.neighborhoodFunction
+	som.CoolingFunction = config.coolingFunction
+
 	som.LoadData(readData(config.data))
 	bar := pb.StartNew(config.trainingSteps)
 
@@ -98,6 +102,8 @@ func doClassification(config *config) {
 		panic(err)
 	}
 
+	som.DistanceFunction = config.distanceFunction
+
 	input := readInput(config.input)
 	fmt.Printf("%f: %f", input, som.Classify(input))
 }
@@ -107,6 +113,9 @@ func doInterpolation(config *config) {
 	if err != nil {
 		panic(err)
 	}
+
+	som.DistanceFunction = config.distanceFunction
+	som.NeighborhoodFunction = config.neighborhoodFunction
 
 	input := readInput(config.input)
 

@@ -1,8 +1,10 @@
 package main
 
 import (
-	"github.com/docopt/docopt-go"
 	"strconv"
+
+	"github.com/docopt/docopt-go"
+	"github.com/256dpi/gosom"
 )
 
 type config struct {
@@ -21,6 +23,9 @@ type config struct {
 	initialization string
 	initialLearningRate float64
 	trainingSteps int
+	distanceFunction gosom.DistanceFunction
+	neighborhoodFunction gosom.NeighborhoodFunction
+	coolingFunction gosom.CoolingFunction
 	input string
 	weighted bool
 	nearestNeighbors int
@@ -32,9 +37,9 @@ func parseConfig() *config {
 
 Usage:
   gosom prepare <file> <data> <width> <height> [-i <im>]
-  gosom train <file> <data> [-l <lr> -t <ts>]
-  gosom classify <file> <input>
-  gosom interpolate <file> <input> [-w -k <nn>]
+  gosom train <file> <data> [-l <lr> -t <ts> -d <df> -n <nf> -c <cf>]
+  gosom classify <file> <input> [-d <df>]
+  gosom interpolate <file> <input> [-d <df> -n <nf> -w -k <nn>]
   gosom plot <file> <directory> [-s <ns>]
   gosom -h
   gosom -v
@@ -47,6 +52,9 @@ Options:
   -i <im>  Initialization method (random, datapoints) [default: datapoints].
   -l <lr>  Initial learning rate [default: 0.5].
   -t <ts>  Number of training steps [default: 10000].
+  -d <df>  Distance function (euclidean, manhattan) [default: euclidean].
+  -n <nf>  Neighborhood function (bubble, cone, gaussian, mexicanhat) [default: cone].
+  -c <cf>  Cooling function (linear, soft, medium, hard) [default: linear].
   -k <nn>  Number of nearest neighbors to consider [default: 5].
   -w       Use weighted interpolation.
   -s <ns>  Size of the individual nodes [default: 10].`
@@ -71,6 +79,9 @@ Options:
 		initialization: getString(a["-i"]),
 		initialLearningRate: getFloat(a["-l"]),
 		trainingSteps: getInt(a["-t"]),
+		distanceFunction: getDistanceFunction(a["-d"]),
+		neighborhoodFunction: getNeighborhoodFunction(a["-n"]),
+		coolingFunction: getCoolingFunction(a["-c"]),
 		input: getString(a["<input>"]),
 		weighted: getBool(a["-w"]),
 		nearestNeighbors: getInt(a["-k"]),
@@ -118,4 +129,51 @@ func getFloat(v interface{}) float64 {
 	} else {
 		return f
 	}
+}
+
+func getDistanceFunction(v interface{}) gosom.DistanceFunction {
+	s := getString(v)
+
+	switch s {
+	case "euclidean":
+		return gosom.EuclideanDistance
+	case "manhattan":
+		return gosom.ManhattanDistance
+	}
+
+	return gosom.EuclideanDistance
+}
+
+func getNeighborhoodFunction(v interface{}) gosom.NeighborhoodFunction {
+	s := getString(v)
+
+	switch s {
+	case "bubble":
+		return gosom.BubbleNeighborhood
+	case "cone":
+		return gosom.ConeNeighborhood
+	case "gaussian":
+		return gosom.GaussianNeighborhood
+	case "mexicanhat":
+		return gosom.MexicanHatNeighborhood
+	}
+
+	return gosom.ConeNeighborhood
+}
+
+func getCoolingFunction(v interface{}) gosom.CoolingFunction {
+	s := getString(v)
+
+	switch s {
+	case "linear":
+		return gosom.LinearCooling
+	case "soft":
+		return gosom.SoftCooling
+	case "medium":
+		return gosom.MediumCooling
+	case "hard":
+		return gosom.HardCooling
+	}
+
+	return gosom.LinearCooling
 }
