@@ -92,7 +92,7 @@ func (som *SOM) Closest(input []float64) *Node {
 
 		if(d < t) {
 			// save distance, clear array and add winner
-			t = d;
+			t = d
 			n = append([]*Node{}, node)
 		} else if(d <= t) {
 			// add winner
@@ -144,7 +144,7 @@ func (som *SOM) Train(steps int, initialLearningRate float64) {
 		dataPoint := som.Data[rand.Intn(som.Rows)]
 
 		// get closest node to input
-		winningNode := som.Closest(dataPoint);
+		winningNode := som.Closest(dataPoint)
 
 		for _, node := range som.Nodes {
 			// calculate distance to winner
@@ -156,7 +156,7 @@ func (som *SOM) Train(steps int, initialLearningRate float64) {
 				i := som.NeighborhoodFunction(distance / radius)
 
 				// adjust node
-				node.Adjust(winningNode.Weights, i * learningRate);
+				node.Adjust(winningNode.Weights, i * learningRate)
 			}
 		}
 	}
@@ -175,16 +175,45 @@ func (som *SOM) Interpolate(input []float64, K int) []float64 {
 	// add up all values
 	for i:=0; i<len(neighbors); i++ {
 		for j:=0; j<som.Columns; j++ {
-			total[j] += neighbors[i].Weights[j];
+			total[j] += neighbors[i].Weights[j]
 		}
 	}
 
 	// calculate average
 	for i:=0; i<som.Columns; i++ {
-		total[i] = total[i] / float64(K);
+		total[i] = total[i] / float64(K)
 	}
 
-	return total;
+	return total
+}
+
+func (som *SOM) WeightedInterpolate(input []float64, K int) []float64 {
+	neighbors := som.Neighbors(input, K)
+	neighborWeights := make([]float64, K)
+	total := make([]float64, som.Columns)
+	sumWeights := make([]float64, som.Columns)
+
+	// calculate weights for neighbors
+	radius := som.DistanceFunction(input, neighbors[K-1].Weights)
+	for i, n := range neighbors {
+		distance := som.DistanceFunction(input, n.Weights)
+		neighborWeights[i] = som.NeighborhoodFunction(distance / radius)
+	}
+
+	// add up all values
+	for i:=0; i<len(neighbors); i++ {
+		for j:=0; j<som.Columns; j++ {
+			total[j] += neighbors[i].Weights[j] * neighborWeights[i]
+			sumWeights[j] += neighborWeights[i]
+		}
+	}
+
+	// calculate average
+	for i:=0; i<som.Columns; i++ {
+		total[i] = total[i] / sumWeights[i]
+	}
+
+	return total
 }
 
 // String returns a string matrix of all nodes and weights

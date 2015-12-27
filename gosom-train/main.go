@@ -31,7 +31,11 @@ func main() {
 	fmt.Printf("3.5: %f\n", som.Interpolate([]float64{0.5}, 8)[1])
 	fmt.Printf("2.5: %f\n", som.Interpolate([]float64{1.5}, 8)[1])
 	fmt.Printf("1.5: %f\n", som.Interpolate([]float64{2.5}, 8)[1])
-	fmt.Printf("0.5: %f\n", som.Interpolate([]float64{3.5}, 8)[1])
+	fmt.Printf("0.5: %f\n\n", som.Interpolate([]float64{3.5}, 8)[1])
+
+	fmt.Printf("0.75: %f\n", som.Classify([]float64{3.25})[1])
+	fmt.Printf("0.75: %f\n", som.Interpolate([]float64{3.25}, 8)[1])
+	fmt.Printf("0.75: %f\n", som.WeightedInterpolate([]float64{3.25}, 8)[1])
 
 	images := som.DimensionImages(5)
 
