@@ -133,37 +133,41 @@ func (som *SOM) Neighbors(input []float64, K int) []*Node {
 	return neighbors
 }
 
-func (som *SOM) Train(steps int, initialLearningRate float64) {
+func (som *SOM) Step(step, steps int, initialLearningRate float64) {
+	// calculate position
+	pos := float64(step) / float64(steps)
+
+	// calculate learning rate
+	learningRate := initialLearningRate * som.CoolingFunction(pos)
+
+	// calculate neighborhood radius
 	initialRadius := float64(Max(som.Width, som.Height)) / 2.0
+	radius := initialRadius * som.CoolingFunction(pos)
 
-	for step:=0; step<steps; step++ {
-		s := float64(step) / float64(steps)
+	// pick random input point
+	dataPoint := som.Data[rand.Intn(som.Rows)]
 
-		// calculate learning rate
-		learningRate := initialLearningRate * som.CoolingFunction(s)
+	// get closest node to input
+	winningNode := som.Closest(dataPoint)
 
-		// calculate neighborhood radius
-		radius := initialRadius * som.CoolingFunction(s)
+	for _, node := range som.Nodes {
+		// calculate distance to winner
+		distance := som.DistanceFunction(winningNode.Position, node.Position)
 
-		// pick random input point
-		dataPoint := som.Data[rand.Intn(som.Rows)]
+		// check inclusion in the radius (doubled to fit gaussian function)
+		if(distance < radius * 2) {
+			// calculate the influence
+			i := som.NeighborhoodFunction(distance / radius)
 
-		// get closest node to input
-		winningNode := som.Closest(dataPoint)
-
-		for _, node := range som.Nodes {
-			// calculate distance to winner
-			distance := som.DistanceFunction(winningNode.Position, node.Position)
-
-			// check inclusion in the radius (doubled to fit gaussian function)
-			if(distance < radius * 2) {
-				// calculate the influence
-				i := som.NeighborhoodFunction(distance / radius)
-
-				// adjust node
-				node.Adjust(winningNode.Weights, i * learningRate)
-			}
+			// adjust node
+			node.Adjust(winningNode.Weights, i * learningRate)
 		}
+	}
+}
+
+func (som *SOM) Train(steps int, initialLearningRate float64) {
+	for step:=0; step<steps; step++ {
+		som.Step(step, steps, initialLearningRate)
 	}
 }
 

@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"os"
 	"encoding/csv"
+	"encoding/json"
 
 	"github.com/256dpi/gosom"
 	"github.com/llgcode/draw2d/draw2dimg"
-	"encoding/json"
+	"github.com/cheggaaa/pb"
 )
 
 func main() {
@@ -54,7 +55,14 @@ func doTrain(config *config) {
 	}
 
 	som.LoadData(readData(config.data))
-	som.Train(config.trainingSteps, config.initialLearningRate)
+	bar := pb.StartNew(config.trainingSteps)
+
+	for step:=0; step<config.trainingSteps; step++ {
+		som.Step(step, config.trainingSteps, config.initialLearningRate)
+		bar.Increment()
+	}
+
+	bar.FinishPrint("Done!")
 
 	err = gosom.Store(som, config.file)
 	if err != nil {
