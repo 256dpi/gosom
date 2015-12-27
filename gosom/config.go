@@ -32,10 +32,10 @@ func parseConfig() *config {
 
 Usage:
   gosom prepare <file> <data> <width> <height> [-i <im>]
-  gosom train <file> <data> [-l <lr> -s <ts>]
+  gosom train <file> <data> [-l <lr> -t <ts>]
   gosom classify <file> <input>
   gosom interpolate <file> <input> [-w -k <nn>]
-  gosom plot <file> <directory> <size>
+  gosom plot <file> <directory> [-s <ns>]
   gosom -h
   gosom -v
   gosom -f
@@ -46,9 +46,10 @@ Options:
   -f       Plot functions to current directoy.
   -i <im>  Initialization method (random, datapoints) [default: datapoints].
   -l <lr>  Initial learning rate [default: 0.5].
-  -s <ts>  Number of training steps [default: 10000].
+  -t <ts>  Number of training steps [default: 10000].
   -k <nn>  Number of nearest neighbors to consider [default: 5].
-  -w       Use weighted interpolation.`
+  -w       Use weighted interpolation.
+  -s <ns>  Size of the individual nodes [default: 10].`
 
 	a, err := docopt.Parse(usage, nil, true, "gosom 0.1", false)
 	if err != nil {
@@ -69,11 +70,11 @@ Options:
 		height: getInt(a["<height>"]),
 		initialization: getString(a["-i"]),
 		initialLearningRate: getFloat(a["-l"]),
-		trainingSteps: getInt(a["-s"]),
+		trainingSteps: getInt(a["-t"]),
 		input: getString(a["<input>"]),
 		weighted: getBool(a["-w"]),
 		nearestNeighbors: getInt(a["-k"]),
-		size: getInt(a["<size>"]),
+		size: getInt(a["-s"]),
 	}
 }
 
