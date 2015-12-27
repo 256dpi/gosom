@@ -13,15 +13,15 @@ import (
 
 // SOM holds an instance of a self organizing map.
 type SOM struct {
-	Width int `json:"width"`
-	Height int `json:"height"`
-	Nodes []*Node `json:"nodes"`
+	Width int
+	Height int
+	Nodes []*Node
 
-	Data [][]float64 `json:"data"`
-	Rows int `json:"rows"`
-	Columns int `json:"columns"`
-	Min []float64 `json:"-"`
-	Max []float64 `json:"-"`
+	Data [][]float64
+	Rows int
+	Columns int
+	Min []float64
+	Max []float64
 
 	CoolingFunction CoolingFunction `json:"-"`
 	DistanceFunction DistanceFunction `json:"-"`
@@ -29,27 +29,21 @@ type SOM struct {
 }
 
 // NewSOM creates and returns a new self organizing map.
-func NewSOM(data [][]float64, width, height int) *SOM {
-	som := &SOM{
+func NewSOM(width, height int) *SOM {
+	return &SOM{
 		Width: width,
 		Height: height,
 		Nodes: make([]*Node, width * height),
-		Data: data,
-		Rows: len(data),
-		Columns: len(data[0]),
 		CoolingFunction: LinearCooling,
 		DistanceFunction: ManhattanDistance,
 		NeighborhoodFunction: ConeNeighborhood,
 	}
+}
 
-	// create nodes
-	for i:=0; i<som.Height; i++ {
-		for j:=0; j<som.Width; j++ {
-			k := i * som.Width + j
-			som.Nodes[k] = NewNode(j, i, som.Columns)
-		}
-	}
-
+func (som *SOM) LoadData(data [][]float64) {
+	som.Data = data
+	som.Rows = len(data)
+	som.Columns = len(data[0])
 	som.Min = make([]float64, som.Columns)
 	som.Max = make([]float64, som.Columns)
 
@@ -60,11 +54,20 @@ func NewSOM(data [][]float64, width, height int) *SOM {
 			som.Max[i] = math.Max(som.Max[i], som.Data[j][i])
 		}
 	}
+}
 
-	return som
+func (som *SOM) createNodes() {
+	for i:=0; i<som.Height; i++ {
+		for j:=0; j<som.Width; j++ {
+			k := i * som.Width + j
+			som.Nodes[k] = NewNode(j, i, som.Columns)
+		}
+	}
 }
 
 func (som *SOM) InitializeWithRandomValues() {
+	som.createNodes()
+
 	for _, node := range som.Nodes {
 		node.Weights = make([]float64, som.Columns)
 		for i:=0; i<som.Columns; i++ {
@@ -74,6 +77,8 @@ func (som *SOM) InitializeWithRandomValues() {
 }
 
 func (som *SOM) InitializeWithDataPoints() {
+	som.createNodes()
+
 	for _, node := range som.Nodes {
 		node.Weights = make([]float64, som.Columns)
 		copy(node.Weights, som.Data[rand.Intn(som.Rows)])

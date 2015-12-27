@@ -8,16 +8,23 @@ import (
 type config struct {
 	prepare bool
 	train bool
+	classify bool
+	interpolate bool
 	plot bool
 	functions bool
 
 	file string
+	directory string
 	data string
 	width int
 	height int
 	initialization string
 	initialLearningRate float64
 	trainingSteps int
+	input string
+	weighted bool
+	nearestNeighbors int
+	size int
 }
 
 func parseConfig() *config {
@@ -26,7 +33,9 @@ func parseConfig() *config {
 Usage:
   gosom prepare <file> <data> <width> <height> [-i <im>]
   gosom train <file> <data> [-l <lr> -s <ts>]
-  gosom plot <file>
+  gosom classify <file> <input>
+  gosom interpolate <file> <input> [-w -k <nn>]
+  gosom plot <file> <directory> <size>
   gosom -h
   gosom -v
   gosom -f
@@ -37,7 +46,9 @@ Options:
   -f       Plot functions to current directoy.
   -i <im>  Initialization method (random, datapoints) [default: datapoints].
   -l <lr>  Initial learning rate [default: 0.5].
-  -s <ts>  Number of training steps [default: 10000].`
+  -s <ts>  Number of training steps [default: 10000].
+  -k <nn>  Number of nearest neighbors to consider [default: 5].
+  -w       Use weighted interpolation.`
 
 	a, err := docopt.Parse(usage, nil, true, "gosom 0.1", false)
 	if err != nil {
@@ -47,15 +58,22 @@ Options:
 	return &config{
 		prepare: getBool(a["prepare"]),
 		train: getBool(a["train"]),
+		classify: getBool(a["classify"]),
+		interpolate: getBool(a["interpolate"]),
 		plot: getBool(a["plot"]),
 		functions: getBool(a["-f"]),
 		file: getString(a["<file>"]),
+		directory: getString(a["<directory>"]),
 		data: getString(a["<data>"]),
 		width: getInt(a["<width>"]),
 		height: getInt(a["<height>"]),
 		initialization: getString(a["-i"]),
 		initialLearningRate: getFloat(a["-l"]),
 		trainingSteps: getInt(a["-s"]),
+		input: getString(a["<input>"]),
+		weighted: getBool(a["-w"]),
+		nearestNeighbors: getInt(a["-k"]),
+		size: getInt(a["<size>"]),
 	}
 }
 

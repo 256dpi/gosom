@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 	"encoding/csv"
-	"encoding/json"
 
 	"github.com/256dpi/gosom"
-	"io/ioutil"
+	"github.com/llgcode/draw2d/draw2dimg"
+	"encoding/json"
 )
 
 func main() {
@@ -19,15 +19,18 @@ func main() {
 		doTrain(c)
 	} else if c.plot {
 		doPlot(c)
+	} else if c.classify {
+		doClassification(c)
+	} else if c.interpolate {
+		doInterpolation(c)
 	} else if c.functions {
 		doFunctions()
 	}
 }
 
 func doPrepare(config *config) {
-	data := readData(config.data)
-
-	som := gosom.NewSOM(data, config.width, config.height)
+	som := gosom.NewSOM(config.width, config.height)
+	som.LoadData(readData(config.data))
 
 	switch config.initialization {
 	case "random":
@@ -36,27 +39,81 @@ func doPrepare(config *config) {
 		som.InitializeWithDataPoints()
 	}
 
-	dump, err := json.MarshalIndent(som, "", "  ")
+	err := gosom.Store(som, config.file)
 	if err != nil {
 		panic(err)
 	}
 
-	ioutil.WriteFile(config.file, dump, 0644)
+	fmt.Printf("Prepared new SOM and saved to '%s'.\n", config.file)
 }
 
 func doTrain(config *config) {
+	som, err := gosom.Load(config.file)
+	if err != nil {
+		panic(err)
+	}
 
+	som.LoadData(readData(config.data))
+	som.Train(config.trainingSteps, config.initialLearningRate)
+
+	err = gosom.Store(som, config.file)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Trained SOM and saved to '%s'.\n", config.file)
 }
 
 func doPlot(config *config) {
+	som, err := gosom.Load(config.file)
+	if err != nil {
+		panic(err)
+	}
 
+	images := som.DimensionImages(config.size)
+
+	for i, img := range images {
+		file := fmt.Sprintf("%s/dimension-%d.png", config.directory, i)
+
+		err := draw2dimg.SaveToPngFile(file, img)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Printf("Plotted dimension to '%s'.\n", file)
+	}
+}
+
+func doClassification(config *config) {
+	som, err := gosom.Load(config.file)
+	if err != nil {
+		panic(err)
+	}
+
+	input := readInput(config.input)
+	fmt.Printf("%f: %f", input, som.Classify(input))
+}
+
+func doInterpolation(config *config) {
+	som, err := gosom.Load(config.file)
+	if err != nil {
+		panic(err)
+	}
+
+	input := readInput(config.input)
+
+	if config.weighted {
+		fmt.Printf("%f: %f", input, som.WeightedInterpolate(input, config.nearestNeighbors))
+	} else {
+		fmt.Printf("%f: %f", input, som.Interpolate(input, config.nearestNeighbors))
+	}
 }
 
 func doFunctions(){
-	fmt.Printf("plotting cooling functions to './cooling.png' ...\n")
+	fmt.Printf("Plotting cooling functions to './cooling.png' ...\n")
 	plotCoolingFunctions("cooling.png")
 
-	fmt.Println("plotting neighborhood functions to './neighborhood.png' ...")
+	fmt.Println("Plotting neighborhood functions to './neighborhood.png' ...")
 	plotNeighborhoodFunctions("neighborhood.png")
 }
 
@@ -84,6 +141,17 @@ func readData(file string) [][]float64 {
 		for j, col := range row {
 			floats[i][j] = getFloat(col)
 		}
+	}
+
+	return floats
+}
+
+func readInput(input string) []float64 {
+	floats := make([]float64, 0)
+
+	err := json.Unmarshal([]byte(input), &floats)
+	if err != nil {
+		panic(err)
 	}
 
 	return floats

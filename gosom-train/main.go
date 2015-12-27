@@ -16,7 +16,8 @@ var data = [][]float64{
 }
 
 func main() {
-	som := gosom.NewSOM(data, 64, 64)
+	som := gosom.NewSOM(64, 64)
+	som.LoadData(data)
 	som.InitializeWithDataPoints()
 	som.Train(10000, 0.5)
 
