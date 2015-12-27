@@ -2,13 +2,13 @@ package gosom
 
 import "math"
 
-// A DistanceFunction calculates and returns the distance between to points.
+// A DistanceFunction calculates the distance between to points.
 type DistanceFunction func(from, to []float64) (distance float64)
 
-// A CoolingFunction returns the cooling alpha [1..0] for an input value [0..1].
+// A CoolingFunction calculates the cooling alpha [1..0] for an input value [0..1].
 type CoolingFunction func(input float64) (output float64)
 
-// A NeighborhoodFunction returns the influence [1..0] of a distance [0..1].
+// A NeighborhoodFunction calculates the influence [1..0] of a distance [0..1..2].
 type NeighborhoodFunction func(distance float64) (influence float64)
 
 func EuclideanDistance(from, to []float64) (distance float64) {
