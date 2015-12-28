@@ -14,6 +14,14 @@ func NewNode(x, y, dimensions int) *Node {
 	}
 }
 
+func (n *Node) X() int {
+	return int(n.Position[0])
+}
+
+func (n *Node) Y() int {
+	return int(n.Position[1])
+}
+
 func (n *Node) Adjust(input []float64, influence float64) {
 	l := Min(len(input), len(n.Weights))
 
