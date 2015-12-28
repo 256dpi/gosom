@@ -267,6 +267,16 @@ func (som *SOM) Dimensions() int {
 	return len(som.Nodes[0].Weights)
 }
 
+func (som *SOM) WeightMatrix() *Matrix {
+	data := make([][]float64, len(som.Nodes))
+
+	for i, node := range som.Nodes {
+		data[i] = make([]float64, som.Dimensions())
+		copy(data[i], node.Weights)
+	}
+
+	return NewMatrix(data)
+}
 func (som *SOM) SaveAsJSON(destination io.Writer) (error) {
 	writer := json.NewEncoder(destination)
 	return writer.Encode(som)

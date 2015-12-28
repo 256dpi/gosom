@@ -8,7 +8,8 @@ import (
 	"github.com/llgcode/draw2d/draw2dimg"
 )
 
-func DrawDimensions(som *SOM, matrix *Matrix, nodeWidth int) []image.Image {
+func DrawDimensions(som *SOM, nodeWidth int) []image.Image {
+	matrix := som.WeightMatrix()
 	images := make([]image.Image, som.Dimensions())
 
 	for i:=0; i<som.Dimensions(); i++ {
