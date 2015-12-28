@@ -51,10 +51,10 @@ func (som *SOM) createNodes(dimensions int) {
 }
 
 func (som *SOM) InitializeWithRandomValues(matrix *Matrix) {
-	som.createNodes(matrix.Dimensions)
+	som.createNodes(matrix.Columns)
 
 	for _, node := range som.Nodes {
-		for i:=0; i< matrix.Dimensions; i++ {
+		for i:=0; i< matrix.Columns; i++ {
 			r := (matrix.Maximums[i] - matrix.Minimums[i]) + matrix.Minimums[i]
 			node.Weights[i] = r * rand.Float64()
 		}
@@ -62,10 +62,10 @@ func (som *SOM) InitializeWithRandomValues(matrix *Matrix) {
 }
 
 func (som *SOM) InitializeWithDataPoints(matrix *Matrix) {
-	som.createNodes(matrix.Dimensions)
+	som.createNodes(matrix.Columns)
 
 	for _, node := range som.Nodes {
-		copy(node.Weights, matrix.RandomPoint())
+		copy(node.Weights, matrix.RandomRow())
 	}
 }
 
@@ -129,7 +129,7 @@ func (som *SOM) Step(matrix *Matrix, step, steps int, initialLearningRate float6
 	radius := initialRadius * som.CoolingFactor(pos)
 
 	// get closest node to input
-	winningNode := som.Closest(matrix.RandomPoint())
+	winningNode := som.Closest(matrix.RandomRow())
 
 	for _, node := range som.Nodes {
 		// calculate distance to winner
