@@ -119,14 +119,14 @@ func (som *SOM) Neighbors(input []float64, K int) []*Node {
 
 func (som *SOM) Step(matrix *Matrix, step, steps int, initialLearningRate float64) {
 	// calculate position
-	pos := float64(step) / float64(steps)
+	progress := float64(step) / float64(steps)
 
 	// calculate learning rate
-	learningRate := initialLearningRate * som.CoolingFactor(pos)
+	learningRate := initialLearningRate * som.CoolingFactor(progress)
 
 	// calculate neighborhood radius
 	initialRadius := float64(Max(som.Width, som.Height)) / 2.0
-	radius := initialRadius * som.CoolingFactor(pos)
+	radius := initialRadius * som.CoolingFactor(progress)
 
 	// get closest node to input
 	winningNode := som.Closest(matrix.RandomRow())
@@ -222,16 +222,16 @@ func (som *SOM) String() string {
 	return s
 }
 
-func (som *SOM) CoolingFactor(input float64) float64 {
+func (som *SOM) CoolingFactor(progress float64) float64 {
 	switch som.CoolingFunction {
 	case "linear":
-		return LinearCooling(input)
+		return LinearCooling(progress)
 	case "soft":
-		return SoftCooling(input)
+		return SoftCooling(progress)
 	case "medium":
-		return MediumCooling(input)
+		return MediumCooling(progress)
 	case "hard":
-		return HardCooling(input)
+		return HardCooling(progress)
 	}
 
 	return 0.0
