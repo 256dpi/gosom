@@ -1,5 +1,7 @@
 package gosom
 
+import "github.com/gonum/floats"
+
 func Min(a, b int) int {
 	if a < b {
 		return a
@@ -15,11 +17,5 @@ func Max(a, b int) int {
 }
 
 func Avg(v []float64) float64 {
-	t := 0.0
-	
-	for _, f := range v {
-		t += f
-	}
-
-	return t / float64(len(v))
+	return floats.Sum(v) / float64(len(v))
 }

@@ -67,18 +67,28 @@ func doTrain(config *config) {
 func doPlot(config *config) {
 	som := loadSOM(config.file)
 
-	images := gosom.DrawDimensions(som, config.size)
+	dimensions := gosom.DrawDimensions(som, config.size)
 
-	for i, img := range images {
+	for i, dimension := range dimensions {
 		file := fmt.Sprintf("%s/dimension-%d.png", config.directory, i)
 
-		err := draw2dimg.SaveToPngFile(file, img)
+		err := draw2dimg.SaveToPngFile(file, dimension)
 		if err != nil {
 			panic(err)
 		}
 
 		fmt.Printf("Plotted dimension to '%s'.\n", file)
 	}
+
+	uMatrix := gosom.DrawUMatrix(som, config.size)
+	file := fmt.Sprintf("%s/umatrix.png", config.directory)
+
+	err := draw2dimg.SaveToPngFile(file, uMatrix)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Plotted U-Matrix to '%s'.\n", file)
 }
 
 func doClassification(config *config) {

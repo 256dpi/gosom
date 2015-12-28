@@ -277,6 +277,11 @@ func (som *SOM) WeightMatrix() *Matrix {
 
 	return NewMatrix(data)
 }
+
+func (som *SOM) Node(x, y int) *Node {
+	return som.Nodes[y * som.Width + x]
+}
+
 func (som *SOM) SaveAsJSON(destination io.Writer) (error) {
 	writer := json.NewEncoder(destination)
 	return writer.Encode(som)
