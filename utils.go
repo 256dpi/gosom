@@ -1,15 +1,25 @@
 package gosom
 
-func Min(x, y int) int {
-	if x < y {
-		return x
+func Min(a, b int) int {
+	if a < b {
+		return a
 	}
-	return y
+	return b
 }
 
-func Max(x, y int) int {
-	if x > y {
-		return x
+func Max(a, b int) int {
+	if a > b {
+		return a
 	}
-	return y
+	return b
+}
+
+func Avg(v []float64) float64 {
+	t := 0.0
+	
+	for _, f := range v {
+		t += f
+	}
+
+	return t / float64(len(v))
 }
