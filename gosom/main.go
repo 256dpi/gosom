@@ -30,7 +30,7 @@ func main() {
 
 func doPrepare(config *config) {
 	som := gosom.NewSOM(config.width, config.height)
-	ds := loadDataSet(config.data)
+	ds := loadData(config.data)
 
 	switch config.initialization {
 	case "random":
@@ -45,7 +45,7 @@ func doPrepare(config *config) {
 
 func doTrain(config *config) {
 	som := loadSOM(config.file)
-	ds := loadDataSet(config.data)
+	ds := loadData(config.data)
 
 	som.DistanceFunction = config.distanceFunction
 	som.NeighborhoodFunction = config.neighborhoodFunction
@@ -66,7 +66,7 @@ func doTrain(config *config) {
 
 func doPlot(config *config) {
 	som := loadSOM(config.file)
-	ds := loadDataSet(config.data)
+	ds := loadData(config.data)
 
 	images := gosom.DrawDimensions(som, ds, config.size)
 
@@ -109,7 +109,7 @@ func doFunctions(){
 	plotNeighborhoodFunctions("neighborhood.png")
 }
 
-func loadDataSet(file string) *gosom.DataSet {
+func loadData(file string) *gosom.Matrix {
 	handle, err := os.Open(file)
 	if err != nil {
 		panic(err)
@@ -117,7 +117,7 @@ func loadDataSet(file string) *gosom.DataSet {
 
 	defer handle.Close()
 
-	ds, err := gosom.LoadDataSetFromCSV(handle)
+	ds, err := gosom.LoadMatrixFromCSV(handle)
 	if err != nil {
 		panic(err)
 	}

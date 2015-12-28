@@ -8,7 +8,7 @@ import (
 	"github.com/llgcode/draw2d/draw2dimg"
 )
 
-func DrawDimensions(som *SOM, dataSet *DataSet, nodeWidth int) []image.Image {
+func DrawDimensions(som *SOM, matrix *Matrix, nodeWidth int) []image.Image {
 	images := make([]image.Image, som.Dimensions())
 
 	for i:=0; i<som.Dimensions(); i++ {
@@ -16,8 +16,8 @@ func DrawDimensions(som *SOM, dataSet *DataSet, nodeWidth int) []image.Image {
 		gc := draw2dimg.NewGraphicContext(img)
 
 		for _, node := range som.Nodes {
-			r := dataSet.Maximums[i] - dataSet.Minimums[i]
-			g := uint8(((node.Weights[i] - dataSet.Minimums[i]) / r) * 255)
+			r := matrix.Maximums[i] - matrix.Minimums[i]
+			g := uint8(((node.Weights[i] - matrix.Minimums[i]) / r) * 255)
 			gc.SetFillColor(&color.Gray{ Y: g })
 
 			x := node.X() * nodeWidth

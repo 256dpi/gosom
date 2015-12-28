@@ -12,8 +12,8 @@ var slice = [][]float64{
 	{ 0.0, 0.5, 1.0 },
 }
 
-func TestDataSet(t *testing.T) {
-	ds := NewDataSet(slice)
+func TestMatrix(t *testing.T) {
+	ds := NewMatrix(slice)
 
 	require.Equal(t, slice, ds.Data)
 	require.Equal(t, 2, ds.Length)
@@ -24,21 +24,21 @@ func TestDataSet(t *testing.T) {
 	require.Equal(t, 1.0, ds.Maximum)
 }
 
-func TestLoadDataSetFromCSV(t *testing.T) {
+func TestLoadMatrixFromCSV(t *testing.T) {
 	csv := "1.0,0.5,0.0\n0.0,0.5,1.0"
 	reader := strings.NewReader(csv)
 
-	ds, err := LoadDataSetFromCSV(reader)
+	ds, err := LoadMatrixFromCSV(reader)
 
 	require.NoError(t, err)
 	require.Equal(t, slice, ds.Data)
 }
 
-func TestLoadDataSetFromJSON(t *testing.T) {
+func TestLoadMatrixFromJSON(t *testing.T) {
 	json := "[[1.0,0.5,0.0],[0.0,0.5,1.0]]"
 	reader := strings.NewReader(json)
 
-	ds, err := LoadDataSetFromJSON(reader)
+	ds, err := LoadMatrixFromJSON(reader)
 
 	require.NoError(t, err)
 	require.Equal(t, slice, ds.Data)

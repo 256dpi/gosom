@@ -9,8 +9,8 @@ import (
 	"math/rand"
 )
 
-// A DataSet holds and extends a float slice of n length a n dimensions.
-type DataSet struct {
+// A Matrix holds and extends a float slice of n length a n dimensions.
+type Matrix struct {
 	// The float slice
 	Data [][]float64
 
@@ -33,10 +33,10 @@ type DataSet struct {
 	Maximum float64
 }
 
-// NewDataSet will create a new DataSet and work out the meta information.
+// NewMatrix will create a new Matrix and work out the meta information.
 // The function expects the float slice to be consistent.
-func NewDataSet(data [][]float64) *DataSet {
-	ds := &DataSet{
+func NewMatrix(data [][]float64) *Matrix {
+	ds := &Matrix{
 		Data: data,
 		Length: len(data),
 		Dimensions: len(data[0]),
@@ -62,11 +62,11 @@ func NewDataSet(data [][]float64) *DataSet {
 	return ds
 }
 
-func (ds *DataSet)RandomDataPoint() []float64 {
+func (ds *Matrix) RandomPoint() []float64 {
 	return ds.Data[rand.Intn(ds.Length)]
 }
 
-func LoadDataSetFromCSV(source io.Reader) (*DataSet, error) {
+func LoadMatrixFromCSV(source io.Reader) (*Matrix, error) {
 	reader := csv.NewReader(source)
 	reader.FieldsPerRecord = -1
 
@@ -91,10 +91,10 @@ func LoadDataSetFromCSV(source io.Reader) (*DataSet, error) {
 		}
 	}
 
-	return NewDataSet(floats), nil
+	return NewMatrix(floats), nil
 }
 
-func LoadDataSetFromJSON(source io.Reader) (*DataSet, error) {
+func LoadMatrixFromJSON(source io.Reader) (*Matrix, error) {
 	reader := json.NewDecoder(source)
 
 	floats := make([][]float64, 0)
@@ -104,5 +104,5 @@ func LoadDataSetFromJSON(source io.Reader) (*DataSet, error) {
 		return nil, err
 	}
 
-	return NewDataSet(floats), nil
+	return NewMatrix(floats), nil
 }

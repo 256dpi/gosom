@@ -50,22 +50,22 @@ func (som *SOM) createNodes(dimensions int) {
 	}
 }
 
-func (som *SOM) InitializeWithRandomValues(dataSet *DataSet) {
-	som.createNodes(dataSet.Dimensions)
+func (som *SOM) InitializeWithRandomValues(matrix *Matrix) {
+	som.createNodes(matrix.Dimensions)
 
 	for _, node := range som.Nodes {
-		for i:=0; i<dataSet.Dimensions; i++ {
-			r := (dataSet.Maximums[i] - dataSet.Minimums[i]) + dataSet.Minimums[i]
+		for i:=0; i< matrix.Dimensions; i++ {
+			r := (matrix.Maximums[i] - matrix.Minimums[i]) + matrix.Minimums[i]
 			node.Weights[i] = r * rand.Float64()
 		}
 	}
 }
 
-func (som *SOM) InitializeWithDataPoints(dataSet *DataSet) {
-	som.createNodes(dataSet.Dimensions)
+func (som *SOM) InitializeWithDataPoints(matrix *Matrix) {
+	som.createNodes(matrix.Dimensions)
 
 	for _, node := range som.Nodes {
-		copy(node.Weights, dataSet.RandomDataPoint())
+		copy(node.Weights, matrix.RandomPoint())
 	}
 }
 
@@ -117,7 +117,7 @@ func (som *SOM) Neighbors(input []float64, K int) []*Node {
 	return neighbors
 }
 
-func (som *SOM) Step(dataSet *DataSet, step, steps int, initialLearningRate float64) {
+func (som *SOM) Step(matrix *Matrix, step, steps int, initialLearningRate float64) {
 	// calculate position
 	pos := float64(step) / float64(steps)
 
@@ -129,7 +129,7 @@ func (som *SOM) Step(dataSet *DataSet, step, steps int, initialLearningRate floa
 	radius := initialRadius * som.CoolingFactor(pos)
 
 	// get closest node to input
-	winningNode := som.Closest(dataSet.RandomDataPoint())
+	winningNode := som.Closest(matrix.RandomPoint())
 
 	for _, node := range som.Nodes {
 		// calculate distance to winner
@@ -146,9 +146,9 @@ func (som *SOM) Step(dataSet *DataSet, step, steps int, initialLearningRate floa
 	}
 }
 
-func (som *SOM) Train(dataSet *DataSet, steps int, initialLearningRate float64) {
+func (som *SOM) Train(matrix *Matrix, steps int, initialLearningRate float64) {
 	for step:=0; step<steps; step++ {
-		som.Step(dataSet, step, steps, initialLearningRate)
+		som.Step(matrix, step, steps, initialLearningRate)
 	}
 }
 
