@@ -45,11 +45,12 @@ func doPrepare(config *config) {
 
 func doTrain(config *config) {
 	som := loadSOM(config.file)
+	ds := loadDataSet(config.data)
+
 	som.DistanceFunction = config.distanceFunction
 	som.NeighborhoodFunction = config.neighborhoodFunction
 	som.CoolingFunction = config.coolingFunction
 
-	ds := loadDataSet(config.data)
 	bar := pb.StartNew(config.trainingSteps)
 
 	for step:=0; step<config.trainingSteps; step++ {
@@ -83,7 +84,6 @@ func doPlot(config *config) {
 
 func doClassification(config *config) {
 	som := loadSOM(config.file)
-	som.DistanceFunction = config.distanceFunction
 
 	input := readInput(config.input)
 	fmt.Printf("%f: %f", input, som.Classify(input))
@@ -91,8 +91,6 @@ func doClassification(config *config) {
 
 func doInterpolation(config *config) {
 	som := loadSOM(config.file)
-	som.DistanceFunction = config.distanceFunction
-	som.NeighborhoodFunction = config.neighborhoodFunction
 
 	input := readInput(config.input)
 
@@ -144,7 +142,7 @@ func loadSOM(file string) *gosom.SOM {
 }
 
 func storeSOM(file string, som *gosom.SOM) {
-	handle, err := os.Open(file)
+	handle, err := os.Create(file)
 	if err != nil {
 		panic(err)
 	}

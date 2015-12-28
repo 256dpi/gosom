@@ -17,10 +17,9 @@ type SOM struct {
 	Width int
 	Height int
 	Nodes []*Node
-
-	CoolingFunction CoolingFunction `json:"-"`
-	DistanceFunction DistanceFunction `json:"-"`
-	NeighborhoodFunction NeighborhoodFunction `json:"-"`
+	CoolingFunction string
+	DistanceFunction string
+	NeighborhoodFunction string
 }
 
 // NewSOM creates and returns a new self organizing map.
@@ -29,9 +28,9 @@ func NewSOM(width, height int) *SOM {
 		Width: width,
 		Height: height,
 		Nodes: make([]*Node, width * height),
-		CoolingFunction: LinearCooling,
-		DistanceFunction: EuclideanDistance,
-		NeighborhoodFunction: ConeNeighborhood,
+		CoolingFunction: "linear",
+		DistanceFunction: "euclidean",
+		NeighborhoodFunction: "cone",
 	}
 }
 
@@ -79,11 +78,11 @@ func (som *SOM) Closest(input []float64) *Node {
 	nodes := make([]*Node, 0)
 
 	// get initial distance
-	t := som.DistanceFunction(input, som.Nodes[0].Weights)
+	t := som.Distance(input, som.Nodes[0].Weights)
 
 	for _, node := range som.Nodes {
 		// calculate distance
-		d := som.DistanceFunction(input, node.Weights)
+		d := som.Distance(input, node.Weights)
 
 		if(d < t) {
 			// save distance, clear array and add winner
@@ -108,8 +107,8 @@ func (som *SOM) Neighbors(input []float64, K int) []*Node {
 	copy(nodes, som.Nodes)
 
 	SortNodes(nodes, func(n1, n2 *Node)(bool){
-		d1 := som.DistanceFunction(input, n1.Weights)
-		d2 := som.DistanceFunction(input, n2.Weights)
+		d1 := som.Distance(input, n1.Weights)
+		d2 := som.Distance(input, n2.Weights)
 
 		return d1 < d2
 	})
@@ -128,23 +127,23 @@ func (som *SOM) Step(dataSet *DataSet, step, steps int, initialLearningRate floa
 	pos := float64(step) / float64(steps)
 
 	// calculate learning rate
-	learningRate := initialLearningRate * som.CoolingFunction(pos)
+	learningRate := initialLearningRate * som.CoolingFactor(pos)
 
 	// calculate neighborhood radius
 	initialRadius := float64(Max(som.Width, som.Height)) / 2.0
-	radius := initialRadius * som.CoolingFunction(pos)
+	radius := initialRadius * som.CoolingFactor(pos)
 
 	// get closest node to input
 	winningNode := som.Closest(dataSet.RandomDataPoint())
 
 	for _, node := range som.Nodes {
 		// calculate distance to winner
-		distance := som.DistanceFunction(winningNode.Position, node.Position)
+		distance := som.Distance(winningNode.Position, node.Position)
 
 		// check inclusion in the radius (doubled to fit gaussian function)
 		if(distance < radius * 2) {
 			// calculate the influence
-			i := som.NeighborhoodFunction(distance / radius)
+			i := som.NeighborhoodInfluenceFactor(distance / radius)
 
 			// adjust node
 			node.Adjust(winningNode.Weights, i * learningRate)
@@ -190,10 +189,10 @@ func (som *SOM) WeightedInterpolate(input []float64, K int) []float64 {
 	sumWeights := make([]float64, som.Dimensions())
 
 	// calculate weights for neighbors
-	radius := som.DistanceFunction(input, neighbors[K-1].Weights)
+	radius := som.Distance(input, neighbors[K-1].Weights)
 	for i, n := range neighbors {
-		distance := som.DistanceFunction(input, n.Weights)
-		neighborWeights[i] = som.NeighborhoodFunction(distance / radius)
+		distance := som.Distance(input, n.Weights)
+		neighborWeights[i] = som.NeighborhoodInfluenceFactor(distance / radius)
 	}
 
 	// add up all values
@@ -250,6 +249,47 @@ func (som *SOM) DimensionImages(dataSet *DataSet, nodeWidth int) []image.Image {
 	}
 
 	return images
+}
+
+func (som *SOM) CoolingFactor(input float64) float64 {
+	switch som.CoolingFunction {
+	case "linear":
+		return LinearCooling(input)
+	case "soft":
+		return SoftCooling(input)
+	case "medium":
+		return MediumCooling(input)
+	case "hard":
+		return HardCooling(input)
+	}
+
+	return 0.0
+}
+
+func (som *SOM) Distance(from, to []float64) float64 {
+	switch som.DistanceFunction {
+	case "euclidean":
+		return EuclideanDistance(from, to)
+	case "manhattan":
+		return ManhattanDistance(from, to)
+	}
+
+	return 0.0
+}
+
+func (som *SOM) NeighborhoodInfluenceFactor(distance float64) float64 {
+	switch som.NeighborhoodFunction {
+	case "bubble":
+		return BubbleNeighborhood(distance)
+	case "cone":
+		return ConeNeighborhood(distance)
+	case "gaussian":
+		return GaussianNeighborhood(distance)
+	case "mexicanthat":
+		return MexicanHatNeighborhood(distance)
+	}
+
+	return 0.0
 }
 
 func (som *SOM) Dimensions() int {
