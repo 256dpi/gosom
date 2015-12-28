@@ -4,12 +4,7 @@ import (
 	"io"
 	"fmt"
 	"math/rand"
-	"image"
-	"image/color"
 	"encoding/json"
-
-	"github.com/llgcode/draw2d/draw2dimg"
-	"github.com/llgcode/draw2d/draw2dkit"
 )
 
 // SOM holds an instance of a self organizing map.
@@ -225,30 +220,6 @@ func (som *SOM) String() string {
 	}
 
 	return s
-}
-
-func (som *SOM) DimensionImages(dataSet *DataSet, nodeWidth int) []image.Image {
-	images := make([]image.Image, som.Dimensions())
-
-	for i:=0; i<som.Dimensions(); i++ {
-		img := image.NewRGBA(image.Rect(0, 0, som.Width*nodeWidth, som.Height*nodeWidth))
-		gc := draw2dimg.NewGraphicContext(img)
-
-		for _, node := range som.Nodes {
-			r := dataSet.Maximums[i] - dataSet.Minimums[i]
-			g := uint8(((node.Weights[i] - dataSet.Minimums[i]) / r) * 255)
-			gc.SetFillColor(&color.Gray{ Y: g })
-
-			x := node.Position[0] * float64(nodeWidth)
-			y := node.Position[1] * float64(nodeWidth)
-			draw2dkit.Rectangle(gc, x, y, x+float64(nodeWidth), y+float64(nodeWidth))
-			gc.Fill()
-		}
-
-		images[i] = img
-	}
-
-	return images
 }
 
 func (som *SOM) CoolingFactor(input float64) float64 {

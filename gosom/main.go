@@ -68,7 +68,7 @@ func doPlot(config *config) {
 	som := loadSOM(config.file)
 	ds := loadDataSet(config.data)
 
-	images := som.DimensionImages(ds, config.size)
+	images := gosom.DrawDimensions(som, ds, config.size)
 
 	for i, img := range images {
 		file := fmt.Sprintf("%s/dimension-%d.png", config.directory, i)
