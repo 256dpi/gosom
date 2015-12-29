@@ -62,8 +62,19 @@ func NewMatrix(data [][]float64) *Matrix {
 	return ds
 }
 
-func (ds *Matrix) RandomRow() []float64 {
-	return ds.Data[rand.Intn(ds.Rows)]
+func (m *Matrix) RandomRow() []float64 {
+	return m.Data[rand.Intn(m.Rows)]
+}
+
+func (m *Matrix) SubMatrix(start, length int) *Matrix {
+	floats := make([][]float64, m.Rows)
+
+	for i, row := range m.Data {
+		floats[i] = make([]float64, length)
+		copy(floats[i], row[start:start + length])
+	}
+
+	return NewMatrix(floats)
 }
 
 func LoadMatrixFromCSV(source io.Reader) (*Matrix, error) {
