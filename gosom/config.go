@@ -30,6 +30,7 @@ type config struct {
 	weighted             bool
 	nearestNeighbors     int
 	size                 int
+	prefix               string
 	testDimensions       int
 }
 
@@ -41,7 +42,7 @@ Usage:
   gosom train <file> <data> [-l <lr> -t <ts> -d <df> -n <nf> -c <cf>]
   gosom classify <file> <input>
   gosom interpolate <file> <input> [-w -k <nn>]
-  gosom plot <file> <directory> [-s <ns>]
+  gosom plot <file> <directory> [-s <ns> -p <fp>]
   gosom test <file> <data> [-k <nn> -j <td> ]
   gosom -f
   gosom -h
@@ -57,6 +58,7 @@ Options:
   -k <nn>  Number of nearest neighbors to consider [default: 5].
   -w       Use weighted interpolation.
   -s <ns>  Size of the individual nodes [default: 10].
+  -p <fp>  Filename prefix [default: som].
   -j <td>  Number of dimensions to test [default: 1].
   -f       Plot functions to current directoy.
   -h       Show help.
@@ -90,6 +92,7 @@ Options:
 		weighted:             getBool(a["-w"]),
 		nearestNeighbors:     getInt(a["-k"]),
 		size:                 getInt(a["-s"]),
+		prefix:               getString(a["-p"]),
 		testDimensions:       getInt(a["-j"]),
 	}
 }

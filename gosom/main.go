@@ -74,7 +74,7 @@ func doPlot(config *config) {
 	dimensions := gosom.DrawDimensions(som, config.size)
 
 	for i, dimension := range dimensions {
-		file := fmt.Sprintf("%s/dimension-%d.png", config.directory, i)
+		file := fmt.Sprintf("%s/%s-dimension-%d.png", config.directory, config.prefix, i)
 
 		err := draw2dimg.SaveToPngFile(file, dimension)
 		if err != nil {
@@ -85,7 +85,7 @@ func doPlot(config *config) {
 	}
 
 	uMatrix := gosom.DrawUMatrix(som, config.size)
-	file := fmt.Sprintf("%s/umatrix.png", config.directory)
+	file := fmt.Sprintf("%s/%s-umatrix.png", config.directory, config.prefix)
 
 	err := draw2dimg.SaveToPngFile(file, uMatrix)
 	if err != nil {
