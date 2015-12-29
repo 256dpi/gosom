@@ -128,8 +128,11 @@ func (som *SOM) Step(matrix *Matrix, step, steps int, initialLearningRate float6
 	initialRadius := float64(Max(som.Width, som.Height)) / 2.0
 	radius := initialRadius * som.CoolingFactor(progress)
 
+	// get random input
+	input := matrix.RandomRow()
+
 	// get closest node to input
-	winningNode := som.Closest(matrix.RandomRow())
+	winningNode := som.Closest(input)
 
 	for _, node := range som.Nodes {
 		// calculate distance to winner
@@ -141,7 +144,7 @@ func (som *SOM) Step(matrix *Matrix, step, steps int, initialLearningRate float6
 			i := som.NeighborhoodInfluenceFactor(distance / radius)
 
 			// adjust node
-			node.Adjust(winningNode.Weights, i * learningRate)
+			node.Adjust(input, i * learningRate)
 		}
 	}
 }
