@@ -3,9 +3,9 @@ package main
 import (
 	"image/color"
 
+	"github.com/256dpi/gosom"
 	"github.com/gonum/plot"
 	"github.com/gonum/plot/plotter"
-	"github.com/256dpi/gosom"
 )
 
 func plotCoolingFunctions(file string) {
@@ -39,7 +39,7 @@ func plotCoolingFunctions(file string) {
 	hard := plotter.NewFunction(func(x float64) float64 {
 		return gosom.HardCooling(x)
 	})
-	hard.Color = color.RGBA{G:255, B: 255, A: 255}
+	hard.Color = color.RGBA{G: 255, B: 255, A: 255}
 	hard.Samples = 100
 
 	p.Add(linear, soft, medium, hard)
@@ -83,7 +83,7 @@ func plotNeighborhoodFunctions(file string) {
 	gaussian := plotter.NewFunction(func(x float64) float64 {
 		return gosom.GaussianNeighborhood(x)
 	})
-	gaussian.Color = color.RGBA{R: 255, B:255, A: 255}
+	gaussian.Color = color.RGBA{R: 255, B: 255, A: 255}
 	gaussian.Samples = 200
 
 	mexicanHat := plotter.NewFunction(func(x float64) float64 {

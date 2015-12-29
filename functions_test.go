@@ -1,8 +1,8 @@
 package gosom
 
 import (
-	"testing"
 	"math"
+	"testing"
 
 	"github.com/stretchr/testify/require"
 )

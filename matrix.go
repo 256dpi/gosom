@@ -1,24 +1,24 @@
 package gosom
 
 import (
-	"math"
 	"encoding/csv"
-	"io"
-	"strconv"
 	"encoding/json"
+	"io"
+	"math"
 	"math/rand"
+	"strconv"
 )
 
 // A Matrix holds and extends a two dimensional float slice.
 type Matrix struct {
 	// The float slice
-	Data     [][]float64
+	Data [][]float64
 
 	// The number of rows in the matrix.
-	Rows     int
+	Rows int
 
 	// The number of columns in the matrix.
-	Columns  int
+	Columns int
 
 	// The minimums of the values per column.
 	Minimums []float64
@@ -27,19 +27,19 @@ type Matrix struct {
 	Maximums []float64
 
 	// The minimum of all values.
-	Minimum  float64
+	Minimum float64
 
 	// The maximum of all values.
-	Maximum  float64
+	Maximum float64
 }
 
 // NewMatrix will create a new Matrix and work out the meta information.
 // The function expects the float slice to be consistent.
 func NewMatrix(data [][]float64) *Matrix {
 	ds := &Matrix{
-		Data: data,
-		Rows: len(data),
-		Columns: len(data[0]),
+		Data:     data,
+		Rows:     len(data),
+		Columns:  len(data[0]),
 		Minimums: make([]float64, len(data[0])),
 		Maximums: make([]float64, len(data[0])),
 	}
@@ -50,8 +50,8 @@ func NewMatrix(data [][]float64) *Matrix {
 	ds.Minimum = ds.Data[0][0]
 	ds.Maximum = ds.Data[0][0]
 
-	for j:=0; j<ds.Rows; j++ {
-		for i:=0; i<ds.Columns; i++ {
+	for j := 0; j < ds.Rows; j++ {
+		for i := 0; i < ds.Columns; i++ {
 			ds.Minimums[i] = math.Min(ds.Minimums[i], ds.Data[j][i])
 			ds.Maximums[i] = math.Max(ds.Maximums[i], ds.Data[j][i])
 			ds.Minimum = math.Min(ds.Minimum, ds.Data[j][i])
@@ -71,7 +71,7 @@ func (m *Matrix) SubMatrix(start, length int) *Matrix {
 
 	for i, row := range m.Data {
 		floats[i] = make([]float64, length)
-		copy(floats[i], row[start:start + length])
+		copy(floats[i], row[start:start+length])
 	}
 
 	return NewMatrix(floats)

@@ -8,8 +8,8 @@ import (
 )
 
 var slice = [][]float64{
-	{ 1.0, 0.5, 0.0 },
-	{ 0.0, 0.5, 1.0 },
+	{1.0, 0.5, 0.0},
+	{0.0, 0.5, 1.0},
 }
 
 func TestMatrix(t *testing.T) {
@@ -29,8 +29,8 @@ func TestSubMatrix1(t *testing.T) {
 	sm := m.SubMatrix(0, 2)
 
 	d := [][]float64{
-		{ 1.0, 0.5 },
-		{ 0.0, 0.5 },
+		{1.0, 0.5},
+		{0.0, 0.5},
 	}
 
 	require.Equal(t, d, sm.Data)
@@ -41,8 +41,8 @@ func TestSubMatrix2(t *testing.T) {
 	sm := m.SubMatrix(2, 1)
 
 	d := [][]float64{
-		{ 0.0 },
-		{ 1.0 },
+		{0.0},
+		{1.0},
 	}
 
 	require.Equal(t, d, sm.Data)

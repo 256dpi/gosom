@@ -1,30 +1,30 @@
 package gosom
 
 import (
-	"io"
-	"fmt"
-	"math/rand"
 	"encoding/json"
+	"fmt"
+	"io"
+	"math/rand"
 )
 
 // SOM holds an instance of a self organizing map.
 type SOM struct {
-	Width int
-	Height int
-	Nodes []*Node
-	CoolingFunction string
-	DistanceFunction string
+	Width                int
+	Height               int
+	Nodes                []*Node
+	CoolingFunction      string
+	DistanceFunction     string
 	NeighborhoodFunction string
 }
 
 // NewSOM creates and returns a new self organizing map.
 func NewSOM(width, height int) *SOM {
 	return &SOM{
-		Width: width,
-		Height: height,
-		Nodes: make([]*Node, width * height),
-		CoolingFunction: "linear",
-		DistanceFunction: "euclidean",
+		Width:                width,
+		Height:               height,
+		Nodes:                make([]*Node, width*height),
+		CoolingFunction:      "linear",
+		DistanceFunction:     "euclidean",
 		NeighborhoodFunction: "cone",
 	}
 }
@@ -42,9 +42,9 @@ func LoadSOMFromJSON(source io.Reader) (*SOM, error) {
 }
 
 func (som *SOM) createNodes(dimensions int) {
-	for i:=0; i<som.Height; i++ {
-		for j:=0; j<som.Width; j++ {
-			k := i * som.Width + j
+	for i := 0; i < som.Height; i++ {
+		for j := 0; j < som.Width; j++ {
+			k := i*som.Width + j
 			som.Nodes[k] = NewNode(j, i, dimensions)
 		}
 	}
@@ -54,7 +54,7 @@ func (som *SOM) InitializeWithRandomValues(data *Matrix) {
 	som.createNodes(data.Columns)
 
 	for _, node := range som.Nodes {
-		for i:=0; i< data.Columns; i++ {
+		for i := 0; i < data.Columns; i++ {
 			r := (data.Maximums[i] - data.Minimums[i]) + data.Minimums[i]
 			node.Weights[i] = r * rand.Float64()
 		}
@@ -79,11 +79,11 @@ func (som *SOM) Closest(input []float64) *Node {
 		// calculate distance
 		d := som.Distance(input, node.Weights)
 
-		if(d < t) {
+		if d < t {
 			// save distance, clear array and add winner
 			t = d
 			nodes = append([]*Node{}, node)
-		} else if(d == t) {
+		} else if d == t {
 			// add winner
 			nodes = append(nodes, node)
 		}
@@ -101,7 +101,7 @@ func (som *SOM) Neighbors(input []float64, K int) []*Node {
 	nodes := make([]*Node, len(som.Nodes))
 	copy(nodes, som.Nodes)
 
-	SortNodes(nodes, func(n1, n2 *Node)(bool){
+	SortNodes(nodes, func(n1, n2 *Node) bool {
 		d1 := som.Distance(input, n1.Weights)
 		d2 := som.Distance(input, n2.Weights)
 
@@ -110,7 +110,7 @@ func (som *SOM) Neighbors(input []float64, K int) []*Node {
 
 	neighbors := make([]*Node, 0, K)
 
-	for i:=0; i<K; i++ {
+	for i := 0; i < K; i++ {
 		neighbors = append(neighbors, nodes[i])
 	}
 
@@ -139,18 +139,18 @@ func (som *SOM) Step(data *Matrix, step, steps int, initialLearningRate float64)
 		distance := som.Distance(winningNode.Position, node.Position)
 
 		// check inclusion in the radius (doubled to fit gaussian function)
-		if(distance < radius * 2) {
+		if distance < radius*2 {
 			// calculate the influence
 			i := som.NeighborhoodInfluenceFactor(distance / radius)
 
 			// adjust node
-			node.Adjust(input, i * learningRate)
+			node.Adjust(input, i*learningRate)
 		}
 	}
 }
 
 func (som *SOM) Train(data *Matrix, steps int, initialLearningRate float64) {
-	for step:=0; step<steps; step++ {
+	for step := 0; step < steps; step++ {
 		som.Step(data, step, steps, initialLearningRate)
 	}
 }
@@ -166,14 +166,14 @@ func (som *SOM) Interpolate(input []float64, K int) []float64 {
 	total := make([]float64, som.Dimensions())
 
 	// add up all values
-	for i:=0; i<len(neighbors); i++ {
-		for j:=0; j<som.Dimensions(); j++ {
+	for i := 0; i < len(neighbors); i++ {
+		for j := 0; j < som.Dimensions(); j++ {
 			total[j] += neighbors[i].Weights[j]
 		}
 	}
 
 	// calculate average
-	for i:=0; i<som.Dimensions(); i++ {
+	for i := 0; i < som.Dimensions(); i++ {
 		total[i] = total[i] / float64(K)
 	}
 
@@ -194,15 +194,15 @@ func (som *SOM) WeightedInterpolate(input []float64, K int) []float64 {
 	}
 
 	// add up all values
-	for i:=0; i<len(neighbors); i++ {
-		for j:=0; j<som.Dimensions(); j++ {
+	for i := 0; i < len(neighbors); i++ {
+		for j := 0; j < som.Dimensions(); j++ {
 			total[j] += neighbors[i].Weights[j] * neighborWeights[i]
 			sumWeights[j] += neighborWeights[i]
 		}
 	}
 
 	// calculate average
-	for i:=0; i<som.Dimensions(); i++ {
+	for i := 0; i < som.Dimensions(); i++ {
 		total[i] = total[i] / sumWeights[i]
 	}
 
@@ -213,9 +213,9 @@ func (som *SOM) WeightedInterpolate(input []float64, K int) []float64 {
 func (som *SOM) String() string {
 	s := ""
 
-	for i:=0; i<som.Height; i++ {
-		for j:=0; j<som.Width; j++ {
-			k := i * som.Height + j
+	for i := 0; i < som.Height; i++ {
+		for j := 0; j < som.Width; j++ {
+			k := i*som.Height + j
 			s += fmt.Sprintf("%.2f ", som.Nodes[k].Weights)
 		}
 
@@ -282,10 +282,10 @@ func (som *SOM) WeightMatrix() *Matrix {
 }
 
 func (som *SOM) Node(x, y int) *Node {
-	return som.Nodes[y * som.Width + x]
+	return som.Nodes[y*som.Width+x]
 }
 
-func (som *SOM) SaveAsJSON(destination io.Writer) (error) {
+func (som *SOM) SaveAsJSON(destination io.Writer) error {
 	writer := json.NewEncoder(destination)
 	return writer.Encode(som)
 }

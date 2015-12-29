@@ -1,15 +1,15 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"encoding/json"
+	"fmt"
 	"math"
+	"os"
 
 	"github.com/256dpi/gosom"
-	"github.com/llgcode/draw2d/draw2dimg"
 	"github.com/cheggaaa/pb"
 	"github.com/gonum/floats"
+	"github.com/llgcode/draw2d/draw2dimg"
 )
 
 func main() {
@@ -57,7 +57,7 @@ func doTrain(config *config) {
 
 	bar := pb.StartNew(config.trainingSteps)
 
-	for step:=0; step<config.trainingSteps; step++ {
+	for step := 0; step < config.trainingSteps; step++ {
 		som.Step(data, step, config.trainingSteps, config.initialLearningRate)
 		bar.Increment()
 	}
@@ -120,25 +120,25 @@ func doTest(config *config) {
 	test := data.SubMatrix(0, config.testDimensions)
 
 	fmt.Println("Classification tests:")
-	testHelper(data, test, func(input []float64)([]float64){
+	testHelper(data, test, func(input []float64) []float64 {
 		return som.Classify(input)
 	})
 
 	fmt.Printf("\nInterpolation tests (K=%d):\n", config.nearestNeighbors)
-	testHelper(data, test, func(input []float64)([]float64){
+	testHelper(data, test, func(input []float64) []float64 {
 		return som.Interpolate(input, config.nearestNeighbors)
 	})
 
 	fmt.Printf("\nWeighted interpolation tests (K=%d):\n", config.nearestNeighbors)
-	testHelper(data, test, func(input []float64)([]float64){
+	testHelper(data, test, func(input []float64) []float64 {
 		return som.WeightedInterpolate(input, config.nearestNeighbors)
 	})
 }
 
-func testHelper(data *gosom.Matrix, test *gosom.Matrix, tester func([]float64)([]float64)) {
+func testHelper(data *gosom.Matrix, test *gosom.Matrix, tester func([]float64) []float64) {
 	errors := make([]float64, data.Rows)
 
-	for i:=0; i<data.Rows; i++ {
+	for i := 0; i < data.Rows; i++ {
 		output := tester(test.Data[i])
 		errors[i] = gosom.Avg(getErrors(data.Data[i], output, test.Columns))
 		fmt.Printf("  %.3f: %.3f (Error: %.2f%%)\n", data.Data[i], output, errors[i])
@@ -147,7 +147,7 @@ func testHelper(data *gosom.Matrix, test *gosom.Matrix, tester func([]float64)([
 	fmt.Printf("  Min: %.2f%%, Max: %.2f%%, Avg: %.2f%%\n", floats.Min(errors), floats.Max(errors), gosom.Avg(errors))
 }
 
-func doFunctions(){
+func doFunctions() {
 	fmt.Printf("Plotting cooling functions to './cooling.png' ...\n")
 	plotCoolingFunctions("cooling.png")
 
@@ -215,8 +215,8 @@ func readInput(input string) []float64 {
 func getErrors(data, test []float64, offset int) []float64 {
 	errors := make([]float64, 0)
 
-	for i:=offset; i<len(data); i++ {
-		errors = append(errors, math.Abs((test[i] - data[i]) / data[i] * 100))
+	for i := offset; i < len(data); i++ {
+		errors = append(errors, math.Abs((test[i]-data[i])/data[i]*100))
 	}
 
 	return errors

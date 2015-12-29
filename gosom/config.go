@@ -7,30 +7,30 @@ import (
 )
 
 type config struct {
-	prepare bool
-	train bool
-	classify bool
+	prepare     bool
+	train       bool
+	classify    bool
 	interpolate bool
-	plot bool
-	test bool
-	functions bool
+	plot        bool
+	test        bool
+	functions   bool
 
-	file string
-	directory string
-	data string
-	width int
-	height int
-	initialization string
-	initialLearningRate float64
-	trainingSteps int
-	distanceFunction string
+	file                 string
+	directory            string
+	data                 string
+	width                int
+	height               int
+	initialization       string
+	initialLearningRate  float64
+	trainingSteps        int
+	distanceFunction     string
 	neighborhoodFunction string
-	coolingFunction string
-	input string
-	weighted bool
-	nearestNeighbors int
-	size int
-	testDimensions int
+	coolingFunction      string
+	input                string
+	weighted             bool
+	nearestNeighbors     int
+	size                 int
+	testDimensions       int
 }
 
 func parseConfig() *config {
@@ -68,29 +68,29 @@ Options:
 	}
 
 	return &config{
-		prepare: getBool(a["prepare"]),
-		train: getBool(a["train"]),
-		classify: getBool(a["classify"]),
-		interpolate: getBool(a["interpolate"]),
-		plot: getBool(a["plot"]),
-		test: getBool(a["test"]),
-		functions: getBool(a["-f"]),
-		file: getString(a["<file>"]),
-		directory: getString(a["<directory>"]),
-		data: getString(a["<data>"]),
-		width: getInt(a["<width>"]),
-		height: getInt(a["<height>"]),
-		initialization: getString(a["-i"]),
-		initialLearningRate: getFloat(a["-l"]),
-		trainingSteps: getInt(a["-t"]),
-		distanceFunction: getString(a["-d"]),
+		prepare:              getBool(a["prepare"]),
+		train:                getBool(a["train"]),
+		classify:             getBool(a["classify"]),
+		interpolate:          getBool(a["interpolate"]),
+		plot:                 getBool(a["plot"]),
+		test:                 getBool(a["test"]),
+		functions:            getBool(a["-f"]),
+		file:                 getString(a["<file>"]),
+		directory:            getString(a["<directory>"]),
+		data:                 getString(a["<data>"]),
+		width:                getInt(a["<width>"]),
+		height:               getInt(a["<height>"]),
+		initialization:       getString(a["-i"]),
+		initialLearningRate:  getFloat(a["-l"]),
+		trainingSteps:        getInt(a["-t"]),
+		distanceFunction:     getString(a["-d"]),
 		neighborhoodFunction: getString(a["-n"]),
-		coolingFunction: getString(a["-c"]),
-		input: getString(a["<input>"]),
-		weighted: getBool(a["-w"]),
-		nearestNeighbors: getInt(a["-k"]),
-		size: getInt(a["-s"]),
-		testDimensions: getInt(a["-j"]),
+		coolingFunction:      getString(a["-c"]),
+		input:                getString(a["<input>"]),
+		weighted:             getBool(a["-w"]),
+		nearestNeighbors:     getInt(a["-k"]),
+		size:                 getInt(a["-s"]),
+		testDimensions:       getInt(a["-j"]),
 	}
 }
 
