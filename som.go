@@ -50,22 +50,22 @@ func (som *SOM) createNodes(dimensions int) {
 	}
 }
 
-func (som *SOM) InitializeWithRandomValues(matrix *Matrix) {
-	som.createNodes(matrix.Columns)
+func (som *SOM) InitializeWithRandomValues(data *Matrix) {
+	som.createNodes(data.Columns)
 
 	for _, node := range som.Nodes {
-		for i:=0; i< matrix.Columns; i++ {
-			r := (matrix.Maximums[i] - matrix.Minimums[i]) + matrix.Minimums[i]
+		for i:=0; i< data.Columns; i++ {
+			r := (data.Maximums[i] - data.Minimums[i]) + data.Minimums[i]
 			node.Weights[i] = r * rand.Float64()
 		}
 	}
 }
 
-func (som *SOM) InitializeWithDataPoints(matrix *Matrix) {
-	som.createNodes(matrix.Columns)
+func (som *SOM) InitializeWithDataPoints(data *Matrix) {
+	som.createNodes(data.Columns)
 
 	for _, node := range som.Nodes {
-		copy(node.Weights, matrix.RandomRow())
+		copy(node.Weights, data.RandomRow())
 	}
 }
 
@@ -117,7 +117,7 @@ func (som *SOM) Neighbors(input []float64, K int) []*Node {
 	return neighbors
 }
 
-func (som *SOM) Step(matrix *Matrix, step, steps int, initialLearningRate float64) {
+func (som *SOM) Step(data *Matrix, step, steps int, initialLearningRate float64) {
 	// calculate position
 	progress := float64(step) / float64(steps)
 
@@ -129,7 +129,7 @@ func (som *SOM) Step(matrix *Matrix, step, steps int, initialLearningRate float6
 	radius := initialRadius * som.CoolingFactor(progress)
 
 	// get random input
-	input := matrix.RandomRow()
+	input := data.RandomRow()
 
 	// get closest node to input
 	winningNode := som.Closest(input)
@@ -149,9 +149,9 @@ func (som *SOM) Step(matrix *Matrix, step, steps int, initialLearningRate float6
 	}
 }
 
-func (som *SOM) Train(matrix *Matrix, steps int, initialLearningRate float64) {
+func (som *SOM) Train(data *Matrix, steps int, initialLearningRate float64) {
 	for step:=0; step<steps; step++ {
-		som.Step(matrix, step, steps, initialLearningRate)
+		som.Step(data, step, steps, initialLearningRate)
 	}
 }
 
