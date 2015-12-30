@@ -81,7 +81,7 @@ func ConeNeighborhood(distance float64) (influence float64) {
 
 // GaussianNeighborhood returns the influence for the specified distance.
 func GaussianNeighborhood(distance float64) (influence float64) {
-	stdDev := 5.5
+	stdDev := 4.0
 	norm := (2.0 * math.Pow(2.0, 2.0)) / math.Pow(stdDev, 2.0)
 	return math.Exp((-distance * distance) / norm)
 }
