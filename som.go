@@ -11,7 +11,7 @@ import (
 type SOM struct {
 	Width                int
 	Height               int
-	Nodes                []*Node
+	Nodes                Lattice
 	CoolingFunction      string
 	DistanceFunction     string
 	NeighborhoodFunction string
@@ -22,7 +22,6 @@ func NewSOM(width, height int) *SOM {
 	return &SOM{
 		Width:                width,
 		Height:               height,
-		Nodes:                make([]*Node, width*height),
 		CoolingFunction:      "linear",
 		DistanceFunction:     "euclidean",
 		NeighborhoodFunction: "cone",
@@ -41,17 +40,8 @@ func LoadSOMFromJSON(source io.Reader) (*SOM, error) {
 	return som, nil
 }
 
-func (som *SOM) createNodes(dimensions int) {
-	for i := 0; i < som.Height; i++ {
-		for j := 0; j < som.Width; j++ {
-			k := i*som.Width + j
-			som.Nodes[k] = NewNode(j, i, dimensions)
-		}
-	}
-}
-
 func (som *SOM) InitializeWithRandomValues(data *Matrix) {
-	som.createNodes(data.Columns)
+	som.Nodes = NewLattice(som.Width, som.Height, data.Columns)
 
 	for _, node := range som.Nodes {
 		for i := 0; i < data.Columns; i++ {
@@ -62,7 +52,7 @@ func (som *SOM) InitializeWithRandomValues(data *Matrix) {
 }
 
 func (som *SOM) InitializeWithDataPoints(data *Matrix) {
-	som.createNodes(data.Columns)
+	som.Nodes = NewLattice(som.Width, som.Height, data.Columns)
 
 	for _, node := range som.Nodes {
 		copy(node.Weights, data.RandomRow())
@@ -98,10 +88,7 @@ func (som *SOM) Closest(input []float64) *Node {
 }
 
 func (som *SOM) Neighbors(input []float64, K int) []*Node {
-	nodes := make([]*Node, len(som.Nodes))
-	copy(nodes, som.Nodes)
-
-	SortNodes(nodes, func(n1, n2 *Node) bool {
+	lat := som.Nodes.Sort(func(n1, n2 *Node) bool {
 		d1 := som.Distance(input, n1.Weights)
 		d2 := som.Distance(input, n2.Weights)
 
@@ -111,7 +98,7 @@ func (som *SOM) Neighbors(input []float64, K int) []*Node {
 	neighbors := make([]*Node, 0, K)
 
 	for i := 0; i < K; i++ {
-		neighbors = append(neighbors, nodes[i])
+		neighbors = append(neighbors, lat[i])
 	}
 
 	return neighbors

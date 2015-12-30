@@ -1,12 +1,12 @@
 package gosom
 
-import "sort"
-
+// A Node is a single neuron in a self organizing map.
 type Node struct {
 	Position []float64
 	Weights  []float64
 }
 
+// NewNode returns a new Node.
 func NewNode(x, y, dimensions int) *Node {
 	return &Node{
 		Position: []float64{float64(x), float64(y)},
@@ -14,46 +14,21 @@ func NewNode(x, y, dimensions int) *Node {
 	}
 }
 
+// X returns the x coordinate of the node.
 func (n *Node) X() int {
 	return int(n.Position[0])
 }
 
+// Y returns the y coordinate of the node.
 func (n *Node) Y() int {
 	return int(n.Position[1])
 }
 
+// Adjust makes the node more alike to the input based on the influence.
 func (n *Node) Adjust(input []float64, influence float64) {
 	l := Min(len(input), len(n.Weights))
 
 	for i := 0; i < l; i++ {
 		n.Weights[i] += (input[i] - n.Weights[i]) * influence
 	}
-}
-
-type NodeSortFunction func(n1, n2 *Node) bool
-
-type nodeSorter struct {
-	nodes        []*Node
-	sortFunction NodeSortFunction
-}
-
-func (ns *nodeSorter) Len() int {
-	return len(ns.nodes)
-}
-
-func (ns *nodeSorter) Swap(i, j int) {
-	ns.nodes[i], ns.nodes[j] = ns.nodes[j], ns.nodes[i]
-}
-
-func (ns *nodeSorter) Less(i, j int) bool {
-	return ns.sortFunction(ns.nodes[i], ns.nodes[j])
-}
-
-func SortNodes(nodes []*Node, sortFunction NodeSortFunction) {
-	ns := &nodeSorter{
-		nodes:        nodes,
-		sortFunction: sortFunction,
-	}
-
-	sort.Sort(ns)
 }
