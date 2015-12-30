@@ -44,16 +44,16 @@ func DrawUMatrix(som *SOM, nodeWidth int) image.Image {
 		var distances []float64
 
 		if node.X() > 1 {
-			distances = append(distances, som.D(node.Weights, som.Node(node.X()-1, node.Y()).Weights))
+			distances = append(distances, som.D(node.Weights, som.N(node.X()-1, node.Y()).Weights))
 		}
 		if node.X()+1 < som.Width {
-			distances = append(distances, som.D(node.Weights, som.Node(node.X()+1, node.Y()).Weights))
+			distances = append(distances, som.D(node.Weights, som.N(node.X()+1, node.Y()).Weights))
 		}
 		if node.Y() > 1 {
-			distances = append(distances, som.D(node.Weights, som.Node(node.X(), node.Y()-1).Weights))
+			distances = append(distances, som.D(node.Weights, som.N(node.X(), node.Y()-1).Weights))
 		}
 		if node.Y()+1 < som.Height {
-			distances = append(distances, som.D(node.Weights, som.Node(node.X(), node.Y()+1).Weights))
+			distances = append(distances, som.D(node.Weights, som.N(node.X(), node.Y()+1).Weights))
 		}
 
 		values[i] = avg(distances)

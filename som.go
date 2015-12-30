@@ -31,6 +31,7 @@ func NewSOM(width, height int) *SOM {
 	}
 }
 
+// LoadSOMFromJSON reads data from source and returns a SOM.
 func LoadSOMFromJSON(source io.Reader) (*SOM, error) {
 	reader := json.NewDecoder(source)
 	som := NewSOM(0, 0)
@@ -43,6 +44,8 @@ func LoadSOMFromJSON(source io.Reader) (*SOM, error) {
 	return som, nil
 }
 
+// InitializeWithRandomValues initializes the nodes with random values between
+// the calculated minimums and maximums per dimension.
 func (som *SOM) InitializeWithRandomValues(data *Matrix) {
 	som.Nodes = NewLattice(som.Width, som.Height, data.Columns)
 
@@ -54,6 +57,7 @@ func (som *SOM) InitializeWithRandomValues(data *Matrix) {
 	}
 }
 
+// InitializeWithDataPoints initializes the nodes with random data points.
 func (som *SOM) InitializeWithDataPoints(data *Matrix) {
 	som.Nodes = NewLattice(som.Width, som.Height, data.Columns)
 
@@ -62,6 +66,7 @@ func (som *SOM) InitializeWithDataPoints(data *Matrix) {
 	}
 }
 
+// Closest returns the closest Node to the input.
 func (som *SOM) Closest(input []float64) *Node {
 	var nodes []*Node
 
@@ -90,6 +95,7 @@ func (som *SOM) Closest(input []float64) *Node {
 	return nodes[0]
 }
 
+// Neighbors returns the K nearest neighbors to the input.
 func (som *SOM) Neighbors(input []float64, K int) []*Node {
 	lat := som.Nodes.Sort(func(n1, n2 *Node) bool {
 		d1 := som.D(input, n1.Weights)
@@ -107,6 +113,7 @@ func (som *SOM) Neighbors(input []float64, K int) []*Node {
 	return neighbors
 }
 
+// Step applies one step of learning.
 func (som *SOM) Step(data *Matrix, step, steps int, initialLearningRate float64) {
 	// calculate position
 	progress := float64(step) / float64(steps)
@@ -139,18 +146,21 @@ func (som *SOM) Step(data *Matrix, step, steps int, initialLearningRate float64)
 	}
 }
 
+// Train trains the SOM from the data.
 func (som *SOM) Train(data *Matrix, steps int, initialLearningRate float64) {
 	for step := 0; step < steps; step++ {
 		som.Step(data, step, steps, initialLearningRate)
 	}
 }
 
+// Classify returns the classification for input.
 func (som *SOM) Classify(input []float64) []float64 {
 	o := make([]float64, som.Dimensions())
 	copy(o, som.Closest(input).Weights)
 	return o
 }
 
+// Interpolate interpolates the input using K neighbors.
 func (som *SOM) Interpolate(input []float64, K int) []float64 {
 	neighbors := som.Neighbors(input, K)
 	total := make([]float64, som.Dimensions())
@@ -170,6 +180,8 @@ func (som *SOM) Interpolate(input []float64, K int) []float64 {
 	return total
 }
 
+// WeightedInterpolate interpolates the input using K neighbors by weighting
+// the distance to the input.
 func (som *SOM) WeightedInterpolate(input []float64, K int) []float64 {
 	neighbors := som.Neighbors(input, K)
 	neighborWeights := make([]float64, K)
@@ -215,22 +227,12 @@ func (som *SOM) String() string {
 	return s
 }
 
-func (som *SOM) CF(progress float64) float64 {
-	return functions.CoolingFactor(som.CoolingFunction, progress)
-}
-
-func (som *SOM) D(from, to []float64) float64 {
-	return functions.Distance(som.DistanceFunction, from, to)
-}
-
-func (som *SOM) NI(distance float64) float64 {
-	return functions.NeighborhoodInfluence(som.NeighborhoodFunction, distance)
-}
-
+// Dimensions returns the dimensions of the nodes.
 func (som *SOM) Dimensions() int {
 	return len(som.Nodes[0].Weights)
 }
 
+// WeightMatrix returns a matrix based on the weights of the nodes.
 func (som *SOM) WeightMatrix() *Matrix {
 	data := make([][]float64, len(som.Nodes))
 
@@ -242,11 +244,28 @@ func (som *SOM) WeightMatrix() *Matrix {
 	return NewMatrix(data)
 }
 
-func (som *SOM) Node(x, y int) *Node {
-	return som.Nodes[y*som.Width+x]
-}
-
+// SaveAsJSON writes the SOM as a JSON file to destination.
 func (som *SOM) SaveAsJSON(destination io.Writer) error {
 	writer := json.NewEncoder(destination)
 	return writer.Encode(som)
+}
+
+// CF is a convenience function for calculating cooling factors.
+func (som *SOM) CF(progress float64) float64 {
+	return functions.CoolingFactor(som.CoolingFunction, progress)
+}
+
+// D is a convenience function for calculating distances.
+func (som *SOM) D(from, to []float64) float64 {
+	return functions.Distance(som.DistanceFunction, from, to)
+}
+
+// NI is a convenience function for calculating neighborhood influences.
+func (som *SOM) NI(distance float64) float64 {
+	return functions.NeighborhoodInfluence(som.NeighborhoodFunction, distance)
+}
+
+// N is a convenience function for accessing nodes.
+func (som *SOM) N(x, y int) *Node {
+	return som.Nodes[y*som.Width+x]
 }
