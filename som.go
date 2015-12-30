@@ -62,7 +62,7 @@ func (som *SOM) InitializeWithDataPoints(data *Matrix) {
 }
 
 func (som *SOM) Closest(input []float64) *Node {
-	nodes := make([]*Node, 0)
+	var nodes []*Node
 
 	// get initial distance
 	t := som.D(input, som.Nodes[0].Weights)

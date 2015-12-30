@@ -41,7 +41,7 @@ func DrawUMatrix(som *SOM, nodeWidth int) image.Image {
 	values := make([]float64, len(som.Nodes))
 
 	for i, node := range som.Nodes {
-		distances := make([]float64, 0)
+		var distances []float64
 
 		if node.X() > 1 {
 			distances = append(distances, som.D(node.Weights, som.Node(node.X()-1, node.Y()).Weights))

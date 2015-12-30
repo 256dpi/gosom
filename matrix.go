@@ -85,10 +85,9 @@ func LoadMatrixFromCSV(source io.Reader) (*Matrix, error) {
 			f, err := strconv.ParseFloat(value, 64)
 			if err != nil {
 				return nil, err
-			} else {
-				floats[i][j] = f
 			}
 
+			floats[i][j] = f
 		}
 	}
 
@@ -99,7 +98,7 @@ func LoadMatrixFromCSV(source io.Reader) (*Matrix, error) {
 func LoadMatrixFromJSON(source io.Reader) (*Matrix, error) {
 	reader := json.NewDecoder(source)
 
-	floats := make([][]float64, 0)
+	var floats [][]float64
 
 	err := reader.Decode(&floats)
 	if err != nil {
