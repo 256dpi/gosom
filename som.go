@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+
 	"github.com/256dpi/gosom/functions"
 )
 

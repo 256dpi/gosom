@@ -3,9 +3,9 @@ package main
 import (
 	"image/color"
 
+	"github.com/256dpi/gosom/functions"
 	"github.com/gonum/plot"
 	"github.com/gonum/plot/plotter"
-	"github.com/256dpi/gosom/functions"
 )
 
 func plotCoolingFunctions(file string) {

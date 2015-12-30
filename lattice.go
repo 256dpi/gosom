@@ -7,7 +7,7 @@ type Lattice []*Node
 
 // NewLattice returns an initialized lattice.
 func NewLattice(width, height, dimensions int) Lattice {
-	lattice := make(Lattice, width * height)
+	lattice := make(Lattice, width*height)
 
 	for i := 0; i < height; i++ {
 		for j := 0; j < width; j++ {
