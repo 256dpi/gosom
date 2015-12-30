@@ -46,3 +46,23 @@ func TestLoadSOMFromJSON(t *testing.T) {
 	require.Equal(t, 0, som.Nodes[0].Y())
 	require.Equal(t, []float64{0.1, 0.2}, som.Nodes[0].Weights)
 }
+
+// Init...
+
+func TestClosest(t *testing.T) {
+	som := NewSOM(3, 3)
+	som.Nodes = NewLattice(3, 3, 2)
+	som.Nodes[4].Weights[1] = 1.0
+
+	require.Equal(t, som.Closest([]float64{0.0, 1.0}), som.Nodes[4])
+}
+
+func TestNeighbors(t *testing.T) {
+	som := NewSOM(3, 3)
+	som.Nodes = NewLattice(3, 3, 2)
+	som.Nodes[0].Weights[1] = 1.0
+	som.Nodes[1].Weights[1] = 0.9
+	som.Nodes[2].Weights[1] = 0.8
+
+	require.Equal(t, som.Neighbors([]float64{0.0, 1.0}, 3), []*Node{som.Nodes[0], som.Nodes[1], som.Nodes[2]})
+}

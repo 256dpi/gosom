@@ -104,13 +104,7 @@ func (som *SOM) Neighbors(input []float64, K int) []*Node {
 		return d1 < d2
 	})
 
-	neighbors := make([]*Node, 0, K)
-
-	for i := 0; i < K; i++ {
-		neighbors = append(neighbors, lat[i])
-	}
-
-	return neighbors
+	return lat[:K]
 }
 
 // Step applies one step of learning.
@@ -138,10 +132,10 @@ func (som *SOM) Step(data *Matrix, step, steps int, initialLearningRate float64)
 		// check inclusion in the radius (doubled to fit gaussian function)
 		if distance < radius*2 {
 			// calculate the influence
-			i := som.NI(distance / radius)
+			influence := som.NI(distance / radius)
 
 			// adjust node
-			node.Adjust(input, i*learningRate)
+			node.Adjust(input, influence*learningRate)
 		}
 	}
 }
