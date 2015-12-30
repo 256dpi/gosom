@@ -130,8 +130,6 @@ func NeighborhoodInfluence(neighborhoodFunction string, distance float64) (influ
 		return ConeNeighborhood(distance)
 	case "gaussian":
 		return GaussianNeighborhood(distance)
-	case "mexicanhat":
-		return MexicanHatNeighborhood(distance)
 	}
 
 	return 0.0

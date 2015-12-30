@@ -56,7 +56,6 @@ func TestNeighborhoodFunctions(t *testing.T) {
 	require.True(t, NeighborhoodInfluence("bubble", 0.5) > 0)
 	require.True(t, NeighborhoodInfluence("cone", 0.5) > 0)
 	require.True(t, NeighborhoodInfluence("gaussian", 0.5) > 0)
-	require.True(t, NeighborhoodInfluence("mexicanhat", 0.5) > 0)
 }
 
 func TestMin(t *testing.T) {

@@ -53,7 +53,7 @@ Options:
   -l <lr>  Initial learning rate [default: 0.5].
   -t <ts>  Number of training steps [default: 10000].
   -d <df>  Distance function (euclidean, manhattan) [default: euclidean].
-  -n <nf>  Neighborhood function (bubble, cone, gaussian, mexicanhat) [default: cone].
+  -n <nf>  Neighborhood function (bubble, cone, gaussian) [default: cone].
   -c <cf>  Cooling function (linear, soft, medium, hard) [default: linear].
   -k <nn>  Number of nearest neighbors to consider [default: 5].
   -w       Use weighted interpolation.
