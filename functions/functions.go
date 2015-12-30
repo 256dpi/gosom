@@ -86,6 +86,11 @@ func GaussianNeighborhood(distance float64) (influence float64) {
 	return math.Exp((-distance * distance) / norm)
 }
 
+// EpanechicovNeighborhood returns the influence for the specified distance.
+func EpanechicovNeighborhood(distance float64) (influence float64) {
+	return math.Max(0.0, 1.0-(distance*distance))
+}
+
 // CoolingFactor returns the cooling factors based on the selected coolingFunction.
 func CoolingFactor(coolingFunction string, progress float64) (factor float64) {
 	switch coolingFunction {
@@ -123,6 +128,8 @@ func NeighborhoodInfluence(neighborhoodFunction string, distance float64) (influ
 		return ConeNeighborhood(distance)
 	case "gaussian":
 		return GaussianNeighborhood(distance)
+	case "epanechicov":
+		return EpanechicovNeighborhood(distance)
 	}
 
 	return 0.0

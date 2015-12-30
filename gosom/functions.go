@@ -86,10 +86,17 @@ func plotNeighborhoodFunctions(file string) {
 	gaussian.Color = color.RGBA{R: 255, B: 255, A: 255}
 	gaussian.Samples = 200
 
-	p.Add(bubble, cone, gaussian)
+	epanechicov := plotter.NewFunction(func(x float64) float64 {
+		return functions.EpanechicovNeighborhood(x)
+	})
+	epanechicov.Color = color.RGBA{G: 255, B: 255, A: 255}
+	epanechicov.Samples = 200
+
+	p.Add(bubble, cone, gaussian, epanechicov)
 	p.Legend.Add("BubbleNeighborhood", bubble)
 	p.Legend.Add("ConeNeighborhood", cone)
 	p.Legend.Add("GaussianNeighborhood", gaussian)
+	p.Legend.Add("EpanechicovNeighborhood", epanechicov)
 
 	p.X.Min = -2.0
 	p.X.Max = 2.0
