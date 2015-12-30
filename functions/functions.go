@@ -86,13 +86,6 @@ func GaussianNeighborhood(distance float64) (influence float64) {
 	return math.Exp((-distance * distance) / norm)
 }
 
-// MexicanHatNeighborhood returns the influence for the specified distance.
-func MexicanHatNeighborhood(distance float64) (influence float64) {
-	norm := 3.0 / 2.0
-	square := math.Pow(distance*norm, 2.0)
-	return (1.0 - square) * math.Exp(-square)
-}
-
 // CoolingFactor returns the cooling factors based on the selected coolingFunction.
 func CoolingFactor(coolingFunction string, progress float64) (factor float64) {
 	switch coolingFunction {
