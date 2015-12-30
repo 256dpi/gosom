@@ -130,7 +130,7 @@ func (som *SOM) Step(data *Matrix, step, steps int, initialLearningRate float64)
 		// check inclusion in the radius (doubled to fit gaussian function)
 		if distance < radius*2 {
 			// calculate the influence
-			i := som.NIF(distance / radius)
+			i := som.NI(distance / radius)
 
 			// adjust node
 			node.Adjust(input, i*learningRate)
@@ -179,7 +179,7 @@ func (som *SOM) WeightedInterpolate(input []float64, K int) []float64 {
 	radius := som.D(input, neighbors[K-1].Weights)
 	for i, n := range neighbors {
 		distance := som.D(input, n.Weights)
-		neighborWeights[i] = som.NIF(distance / radius)
+		neighborWeights[i] = som.NI(distance / radius)
 	}
 
 	// add up all values
@@ -222,8 +222,8 @@ func (som *SOM) D(from, to []float64) float64 {
 	return functions.Distance(som.DistanceFunction, from, to)
 }
 
-func (som *SOM) NIF(distance float64) float64 {
-	return functions.NeighborhoodInfluenceFactor(som.NeighborhoodFunction, distance)
+func (som *SOM) NI(distance float64) float64 {
+	return functions.NeighborhoodInfluence(som.NeighborhoodFunction, distance)
 }
 
 func (som *SOM) Dimensions() int {
