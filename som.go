@@ -114,7 +114,7 @@ func (som *SOM) Step(data *Matrix, step, steps int, initialLearningRate float64)
 	learningRate := initialLearningRate * som.CF(progress)
 
 	// calculate neighborhood radius
-	initialRadius := float64(Max(som.Width, som.Height)) / 2.0
+	initialRadius := float64(max(som.Width, som.Height)) / 2.0
 	radius := initialRadius * som.CF(progress)
 
 	// get random input

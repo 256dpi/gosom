@@ -26,7 +26,7 @@ func (n *Node) Y() int {
 
 // Adjust makes the node more alike to the input based on the influence.
 func (n *Node) Adjust(input []float64, influence float64) {
-	l := Min(len(input), len(n.Weights))
+	l := min(len(input), len(n.Weights))
 
 	for i := 0; i < l; i++ {
 		n.Weights[i] += (input[i] - n.Weights[i]) * influence

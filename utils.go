@@ -2,20 +2,20 @@ package gosom
 
 import "github.com/gonum/floats"
 
-func Min(a, b int) int {
+func min(a, b int) int {
 	if a < b {
 		return a
 	}
 	return b
 }
 
-func Max(a, b int) int {
+func max(a, b int) int {
 	if a > b {
 		return a
 	}
 	return b
 }
 
-func Avg(v []float64) float64 {
+func avg(v []float64) float64 {
 	return floats.Sum(v) / float64(len(v))
 }

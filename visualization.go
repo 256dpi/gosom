@@ -56,7 +56,7 @@ func DrawUMatrix(som *SOM, nodeWidth int) image.Image {
 			distances = append(distances, som.D(node.Weights, som.Node(node.X(), node.Y()+1).Weights))
 		}
 
-		values[i] = Avg(distances)
+		values[i] = avg(distances)
 	}
 
 	min := floats.Min(values)
