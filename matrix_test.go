@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"strings"
+	"github.com/stretchr/testify/assert"
 )
 
 var slice = [][]float64{
@@ -46,6 +47,15 @@ func TestSubMatrix2(t *testing.T) {
 	}
 
 	require.Equal(t, d, sm.Data)
+}
+
+func TestRandomRow(t *testing.T) {
+	m := NewMatrix(slice)
+
+	t1 := assert.ObjectsAreEqual(m.RandomRow(), slice[0])
+	t2 := assert.ObjectsAreEqual(m.RandomRow(), slice[1])
+
+	require.True(t, t1 || t2)
 }
 
 func TestLoadMatrixFromCSV(t *testing.T) {

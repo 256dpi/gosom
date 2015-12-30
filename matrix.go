@@ -11,30 +11,17 @@ import (
 
 // A Matrix holds and extends a two dimensional float slice.
 type Matrix struct {
-	// The float slice
-	Data [][]float64
-
-	// The number of rows in the matrix.
-	Rows int
-
-	// The number of columns in the matrix.
-	Columns int
-
-	// The minimums of the values per column.
+	Data     [][]float64
+	Rows     int
+	Columns  int
 	Minimums []float64
-
-	// The maximums of the values per column.
 	Maximums []float64
-
-	// The minimum of all values.
-	Minimum float64
-
-	// The maximum of all values.
-	Maximum float64
+	Minimum  float64
+	Maximum  float64
 }
 
 // NewMatrix will create a new Matrix and work out the meta information.
-// The function expects the float slice to be consistent.
+// The function expects the float slice to be consistent in columns.
 func NewMatrix(data [][]float64) *Matrix {
 	ds := &Matrix{
 		Data:     data,
@@ -62,10 +49,12 @@ func NewMatrix(data [][]float64) *Matrix {
 	return ds
 }
 
+// RandomRow returns a random row from the matrix.
 func (m *Matrix) RandomRow() []float64 {
 	return m.Data[rand.Intn(m.Rows)]
 }
 
+// SubMatrix returns a matrix that holds a subset of the current matrix.
 func (m *Matrix) SubMatrix(start, length int) *Matrix {
 	floats := make([][]float64, m.Rows)
 
@@ -77,6 +66,7 @@ func (m *Matrix) SubMatrix(start, length int) *Matrix {
 	return NewMatrix(floats)
 }
 
+// LoadMatrixFromCSV reads CSV data and returns a new matrix.
 func LoadMatrixFromCSV(source io.Reader) (*Matrix, error) {
 	reader := csv.NewReader(source)
 	reader.FieldsPerRecord = -1
@@ -105,6 +95,7 @@ func LoadMatrixFromCSV(source io.Reader) (*Matrix, error) {
 	return NewMatrix(floats), nil
 }
 
+// LoadMatrixFromJSON read JSON data and returns a new matrix.
 func LoadMatrixFromJSON(source io.Reader) (*Matrix, error) {
 	reader := json.NewDecoder(source)
 
