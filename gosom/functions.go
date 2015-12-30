@@ -3,9 +3,9 @@ package main
 import (
 	"image/color"
 
-	"github.com/256dpi/gosom"
 	"github.com/gonum/plot"
 	"github.com/gonum/plot/plotter"
+	"github.com/256dpi/gosom/functions"
 )
 
 func plotCoolingFunctions(file string) {
@@ -19,25 +19,25 @@ func plotCoolingFunctions(file string) {
 	p.Y.Label.Text = "Output"
 
 	linear := plotter.NewFunction(func(x float64) float64 {
-		return gosom.LinearCooling(x)
+		return functions.LinearCooling(x)
 	})
 	linear.Color = color.RGBA{B: 255, A: 255}
 	linear.Samples = 100
 
 	soft := plotter.NewFunction(func(x float64) float64 {
-		return gosom.SoftCooling(x)
+		return functions.SoftCooling(x)
 	})
 	soft.Color = color.RGBA{G: 255, A: 255}
 	soft.Samples = 100
 
 	medium := plotter.NewFunction(func(x float64) float64 {
-		return gosom.MediumCooling(x)
+		return functions.MediumCooling(x)
 	})
 	medium.Color = color.RGBA{R: 255, B: 255, A: 255}
 	medium.Samples = 100
 
 	hard := plotter.NewFunction(func(x float64) float64 {
-		return gosom.HardCooling(x)
+		return functions.HardCooling(x)
 	})
 	hard.Color = color.RGBA{G: 255, B: 255, A: 255}
 	hard.Samples = 100
@@ -69,25 +69,25 @@ func plotNeighborhoodFunctions(file string) {
 	p.Y.Label.Text = "Influence"
 
 	bubble := plotter.NewFunction(func(x float64) float64 {
-		return gosom.BubbleNeighborhood(x)
+		return functions.BubbleNeighborhood(x)
 	})
 	bubble.Color = color.RGBA{B: 255, A: 255}
 	bubble.Samples = 200
 
 	cone := plotter.NewFunction(func(x float64) float64 {
-		return gosom.ConeNeighborhood(x)
+		return functions.ConeNeighborhood(x)
 	})
 	cone.Color = color.RGBA{G: 255, A: 255}
 	cone.Samples = 200
 
 	gaussian := plotter.NewFunction(func(x float64) float64 {
-		return gosom.GaussianNeighborhood(x)
+		return functions.GaussianNeighborhood(x)
 	})
 	gaussian.Color = color.RGBA{R: 255, B: 255, A: 255}
 	gaussian.Samples = 200
 
 	mexicanHat := plotter.NewFunction(func(x float64) float64 {
-		return gosom.MexicanHatNeighborhood(x)
+		return functions.MexicanHatNeighborhood(x)
 	})
 	mexicanHat.Color = color.RGBA{G: 255, B: 255, A: 255}
 	mexicanHat.Samples = 200
