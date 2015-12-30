@@ -1,3 +1,4 @@
+// Package gosom implements the self organizing map algorithm.
 package gosom
 
 import (
