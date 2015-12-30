@@ -56,9 +56,9 @@ func BubbleNeighborhood(distance float64) (influence float64) {
 
 	if d < 1.0 {
 		return 1.0
-	} else {
-		return 0.0
 	}
+
+	return 0.0
 }
 
 func ConeNeighborhood(distance float64) (influence float64) {
@@ -66,9 +66,9 @@ func ConeNeighborhood(distance float64) (influence float64) {
 
 	if d < 1.0 {
 		return (1.0 - d) / 1.0
-	} else {
-		return 0.0
 	}
+	
+	return 0.0
 }
 
 func GaussianNeighborhood(distance float64) (influence float64) {

@@ -102,9 +102,9 @@ func getBool(v interface{}) bool {
 
 	if !ok {
 		return false
-	} else {
-		return b
 	}
+
+	return b
 }
 
 func getString(v interface{}) string {
@@ -112,9 +112,9 @@ func getString(v interface{}) string {
 
 	if !ok {
 		return ""
-	} else {
-		return s
 	}
+
+	return s
 }
 
 func getInt(v interface{}) int {
@@ -123,9 +123,9 @@ func getInt(v interface{}) int {
 	i, err := strconv.Atoi(s)
 	if err != nil {
 		return 0
-	} else {
-		return i
 	}
+
+	return i
 }
 
 func getFloat(v interface{}) float64 {
@@ -134,7 +134,7 @@ func getFloat(v interface{}) float64 {
 	f, err := strconv.ParseFloat(s, 64)
 	if err != nil {
 		return 0.0
-	} else {
-		return f
 	}
+
+	return f
 }

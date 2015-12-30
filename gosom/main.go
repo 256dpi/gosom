@@ -202,7 +202,7 @@ func storeSOM(file string, som *gosom.SOM) {
 }
 
 func readInput(input string) []float64 {
-	floats := make([]float64, 0)
+	var floats []float64
 
 	err := json.Unmarshal([]byte(input), &floats)
 	if err != nil {
@@ -213,7 +213,7 @@ func readInput(input string) []float64 {
 }
 
 func getErrors(data, test []float64, offset int) []float64 {
-	errors := make([]float64, 0)
+	var errors []float64
 
 	for i := offset; i < len(data); i++ {
 		errors = append(errors, math.Abs((test[i]-data[i])/data[i]*100))
