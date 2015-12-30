@@ -9,6 +9,7 @@ import (
 	"github.com/llgcode/draw2d/draw2dkit"
 )
 
+// DrawDimensions draws the dimensions of the SOM as images.
 func DrawDimensions(som *SOM, nodeWidth int) []image.Image {
 	matrix := som.WeightMatrix()
 	images := make([]image.Image, som.Dimensions())
@@ -34,6 +35,7 @@ func DrawDimensions(som *SOM, nodeWidth int) []image.Image {
 	return images
 }
 
+// DrawUMatrix draws the U-Matrix of the SOM as an image.
 func DrawUMatrix(som *SOM, nodeWidth int) image.Image {
 	img := image.NewRGBA(image.Rect(0, 0, som.Width*nodeWidth, som.Height*nodeWidth))
 	gc := draw2dimg.NewGraphicContext(img)
