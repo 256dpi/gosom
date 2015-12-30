@@ -36,10 +36,20 @@ func TestManhattanDistance(t *testing.T) {
 }
 
 func TestCoolingFunctions(t *testing.T) {
-	require.True(t, CoolingFactor("linear", 0.5) > 0)
-	require.True(t, CoolingFactor("soft", 0.5) > 0)
-	require.True(t, CoolingFactor("medium", 0.5) > 0)
-	require.True(t, CoolingFactor("hard", 0.5) > 0)
+	require.True(t, CoolingFactor("linear", 0.0) > 0.95)
+	require.True(t, CoolingFactor("soft", 0.0) > 0.95)
+	require.True(t, CoolingFactor("medium", 0.0) > 0.95)
+	require.True(t, CoolingFactor("hard", 0.0) > 0.95)
+
+	require.True(t, CoolingFactor("linear", 0.5) > 0.0)
+	require.True(t, CoolingFactor("soft", 0.5) > 0.0)
+	require.True(t, CoolingFactor("medium", 0.5) > 0.0)
+	require.True(t, CoolingFactor("hard", 0.5) > 0.0)
+
+	require.True(t, CoolingFactor("linear", 1.0) < 0.5)
+	require.True(t, CoolingFactor("soft", 1.0) < 0.5)
+	require.True(t, CoolingFactor("medium", 1.0) < 0.5)
+	require.True(t, CoolingFactor("hard", 1.0) < 0.5)
 }
 
 func TestNeighborhoodFunctions(t *testing.T) {
@@ -47,4 +57,9 @@ func TestNeighborhoodFunctions(t *testing.T) {
 	require.True(t, NeighborhoodInfluence("cone", 0.5) > 0)
 	require.True(t, NeighborhoodInfluence("gaussian", 0.5) > 0)
 	require.True(t, NeighborhoodInfluence("mexicanhat", 0.5) > 0)
+}
+
+func TestMin(t *testing.T) {
+	require.Equal(t, 1, min(1, 2))
+	require.Equal(t, 1, min(2, 1))
 }
