@@ -1,4 +1,4 @@
-package gosom
+package functions
 
 import "math"
 
@@ -13,7 +13,7 @@ type NeighborhoodFunction func(distance float64) (influence float64)
 
 func EuclideanDistance(from, to []float64) (distance float64) {
 	d := 0.0
-	l := Min(len(from), len(to))
+	l := min(len(from), len(to))
 
 	for i := 0; i < l; i++ {
 		d += (from[i] - to[i]) * (from[i] - to[i])
@@ -24,7 +24,7 @@ func EuclideanDistance(from, to []float64) (distance float64) {
 
 func ManhattanDistance(from, to []float64) (distance float64) {
 	d := 0.0
-	l := Min(len(from), len(to))
+	l := min(len(from), len(to))
 
 	for i := 0; i < l; i++ {
 		d += math.Abs(to[i] - from[i])
@@ -81,4 +81,52 @@ func MexicanHatNeighborhood(distance float64) (influence float64) {
 	norm := 3.0 / 2.0
 	square := math.Pow(distance*norm, 2.0)
 	return (1.0 - square) * math.Exp(-square)
+}
+
+func CoolingFactor(coolingFunction string, progress float64) float64 {
+	switch coolingFunction {
+	case "linear":
+		return LinearCooling(progress)
+	case "soft":
+		return SoftCooling(progress)
+	case "medium":
+		return MediumCooling(progress)
+	case "hard":
+		return HardCooling(progress)
+	}
+
+	return 0.0
+}
+
+func Distance(distanceFunction string, from, to []float64) float64 {
+	switch distanceFunction {
+	case "euclidean":
+		return EuclideanDistance(from, to)
+	case "manhattan":
+		return ManhattanDistance(from, to)
+	}
+
+	return 0.0
+}
+
+func NeighborhoodInfluenceFactor(neighborhoodFunction string, distance float64) float64 {
+	switch neighborhoodFunction {
+	case "bubble":
+		return BubbleNeighborhood(distance)
+	case "cone":
+		return ConeNeighborhood(distance)
+	case "gaussian":
+		return GaussianNeighborhood(distance)
+	case "mexicanhat":
+		return MexicanHatNeighborhood(distance)
+	}
+
+	return 0.0
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }

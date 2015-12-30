@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"github.com/256dpi/gosom/functions"
 )
 
 // SOM holds an instance of a self organizing map.
@@ -64,11 +65,11 @@ func (som *SOM) Closest(input []float64) *Node {
 	nodes := make([]*Node, 0)
 
 	// get initial distance
-	t := som.Distance(input, som.Nodes[0].Weights)
+	t := som.D(input, som.Nodes[0].Weights)
 
 	for _, node := range som.Nodes {
 		// calculate distance
-		d := som.Distance(input, node.Weights)
+		d := som.D(input, node.Weights)
 
 		if d < t {
 			// save distance, clear array and add winner
@@ -90,8 +91,8 @@ func (som *SOM) Closest(input []float64) *Node {
 
 func (som *SOM) Neighbors(input []float64, K int) []*Node {
 	lat := som.Nodes.Sort(func(n1, n2 *Node) bool {
-		d1 := som.Distance(input, n1.Weights)
-		d2 := som.Distance(input, n2.Weights)
+		d1 := som.D(input, n1.Weights)
+		d2 := som.D(input, n2.Weights)
 
 		return d1 < d2
 	})
@@ -110,11 +111,11 @@ func (som *SOM) Step(data *Matrix, step, steps int, initialLearningRate float64)
 	progress := float64(step) / float64(steps)
 
 	// calculate learning rate
-	learningRate := initialLearningRate * som.CoolingFactor(progress)
+	learningRate := initialLearningRate * som.CF(progress)
 
 	// calculate neighborhood radius
 	initialRadius := float64(Max(som.Width, som.Height)) / 2.0
-	radius := initialRadius * som.CoolingFactor(progress)
+	radius := initialRadius * som.CF(progress)
 
 	// get random input
 	input := data.RandomRow()
@@ -124,12 +125,12 @@ func (som *SOM) Step(data *Matrix, step, steps int, initialLearningRate float64)
 
 	for _, node := range som.Nodes {
 		// calculate distance to winner
-		distance := som.Distance(winningNode.Position, node.Position)
+		distance := som.D(winningNode.Position, node.Position)
 
 		// check inclusion in the radius (doubled to fit gaussian function)
 		if distance < radius*2 {
 			// calculate the influence
-			i := som.NeighborhoodInfluenceFactor(distance / radius)
+			i := som.NIF(distance / radius)
 
 			// adjust node
 			node.Adjust(input, i*learningRate)
@@ -175,10 +176,10 @@ func (som *SOM) WeightedInterpolate(input []float64, K int) []float64 {
 	sumWeights := make([]float64, som.Dimensions())
 
 	// calculate weights for neighbors
-	radius := som.Distance(input, neighbors[K-1].Weights)
+	radius := som.D(input, neighbors[K-1].Weights)
 	for i, n := range neighbors {
-		distance := som.Distance(input, n.Weights)
-		neighborWeights[i] = som.NeighborhoodInfluenceFactor(distance / radius)
+		distance := som.D(input, n.Weights)
+		neighborWeights[i] = som.NIF(distance / radius)
 	}
 
 	// add up all values
@@ -213,45 +214,16 @@ func (som *SOM) String() string {
 	return s
 }
 
-func (som *SOM) CoolingFactor(progress float64) float64 {
-	switch som.CoolingFunction {
-	case "linear":
-		return LinearCooling(progress)
-	case "soft":
-		return SoftCooling(progress)
-	case "medium":
-		return MediumCooling(progress)
-	case "hard":
-		return HardCooling(progress)
-	}
-
-	return 0.0
+func (som *SOM) CF(progress float64) float64 {
+	return functions.CoolingFactor(som.CoolingFunction, progress)
 }
 
-func (som *SOM) Distance(from, to []float64) float64 {
-	switch som.DistanceFunction {
-	case "euclidean":
-		return EuclideanDistance(from, to)
-	case "manhattan":
-		return ManhattanDistance(from, to)
-	}
-
-	return 0.0
+func (som *SOM) D(from, to []float64) float64 {
+	return functions.Distance(som.DistanceFunction, from, to)
 }
 
-func (som *SOM) NeighborhoodInfluenceFactor(distance float64) float64 {
-	switch som.NeighborhoodFunction {
-	case "bubble":
-		return BubbleNeighborhood(distance)
-	case "cone":
-		return ConeNeighborhood(distance)
-	case "gaussian":
-		return GaussianNeighborhood(distance)
-	case "mexicanthat":
-		return MexicanHatNeighborhood(distance)
-	}
-
-	return 0.0
+func (som *SOM) NIF(distance float64) float64 {
+	return functions.NeighborhoodInfluenceFactor(som.NeighborhoodFunction, distance)
 }
 
 func (som *SOM) Dimensions() int {
