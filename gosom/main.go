@@ -55,16 +55,18 @@ func doTrain(config *config) {
 	som := loadSOM(config.file)
 	data := loadData(config.data)
 
-	initialRadius := math.Max(float64(som.Width), float64(som.Height)) / 2.0
-
 	training := gosom.NewTraining(
 		som,
 		config.trainingSteps,
 		config.initialLearningRate,
 		config.finalLearningRate,
-		initialRadius,
-		0.0,
+		config.initialRadius,
+		config.finalRadius,
 	)
+
+	if training.InitialRadius < 0 {
+		training.InitialRadius = math.Max(float64(som.Width), float64(som.Height)) / 2.0
+	}
 
 	bar := pb.StartNew(config.trainingSteps)
 

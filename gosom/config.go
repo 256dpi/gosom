@@ -21,12 +21,14 @@ type config struct {
 	width                int
 	height               int
 	initialization       string
-	initialLearningRate  float64
-	finalLearningRate    float64
-	trainingSteps        int
 	distanceFunction     string
 	neighborhoodFunction string
 	coolingFunction      string
+	trainingSteps        int
+	initialLearningRate  float64
+	finalLearningRate    float64
+	initialRadius        float64
+	finalRadius          float64
 	input                string
 	weighted             bool
 	nearestNeighbors     int
@@ -40,7 +42,7 @@ func parseConfig() *config {
 
 Usage:
   gosom prepare <file> <data> <width> <height> [-i <im> -d <df> -n <nf> -c <cf>]
-  gosom train <file> <data> [-t <ts> -l <lr> -m <lr>]
+  gosom train <file> <data> [-t <ts> -l <lr> -m <lr> -r <nr> -g <nr>]
   gosom classify <file> <input>
   gosom interpolate <file> <input> [-w -k <nn>]
   gosom plot <file> <directory> [-s <ns> -p <fp>]
@@ -57,6 +59,8 @@ Options:
   -t <ts>  Number of training steps [default: 10000].
   -l <lr>  Initial learning rate [default: 0.5].
   -m <lr>  Final learning rate [default: 0.05].
+  -r <nr>  Initial neighborhood radius [default: -1].
+  -g <nr>  Final neighborhood radius [default: 0.0].
   -k <nn>  Number of nearest neighbors to consider [default: 5].
   -w       Use weighted interpolation.
   -s <ns>  Size of the individual nodes [default: 10].
@@ -85,12 +89,14 @@ Options:
 		width:                getInt(a["<width>"]),
 		height:               getInt(a["<height>"]),
 		initialization:       getString(a["-i"]),
-		initialLearningRate:  getFloat(a["-l"]),
-		finalLearningRate:    getFloat(a["-m"]),
-		trainingSteps:        getInt(a["-t"]),
 		distanceFunction:     getString(a["-d"]),
 		neighborhoodFunction: getString(a["-n"]),
 		coolingFunction:      getString(a["-c"]),
+		trainingSteps:        getInt(a["-t"]),
+		initialLearningRate:  getFloat(a["-l"]),
+		finalLearningRate:    getFloat(a["-m"]),
+		initialRadius:        getFloat(a["-r"]),
+		finalRadius:          getFloat(a["-g"]),
 		input:                getString(a["<input>"]),
 		weighted:             getBool(a["-w"]),
 		nearestNeighbors:     getInt(a["-k"]),
