@@ -108,7 +108,7 @@ func (som *SOM) Neighbors(input []float64, K int) []*Node {
 }
 
 // Step applies one step of learning.
-func (som *SOM) Step(data *Matrix, step, steps int, initialLearningRate float64) {
+func (som *SOM) Step(data *Matrix, step, steps int, initialRadius, initialLearningRate float64) {
 	// calculate position
 	progress := float64(step) / float64(steps)
 
@@ -116,7 +116,6 @@ func (som *SOM) Step(data *Matrix, step, steps int, initialLearningRate float64)
 	learningRate := initialLearningRate * som.CF(progress)
 
 	// calculate neighborhood radius
-	initialRadius := float64(max(som.Width, som.Height)) / 2.0
 	radius := initialRadius * som.CF(progress)
 
 	// get random input
@@ -141,9 +140,9 @@ func (som *SOM) Step(data *Matrix, step, steps int, initialLearningRate float64)
 }
 
 // Train trains the SOM from the data.
-func (som *SOM) Train(data *Matrix, steps int, initialLearningRate float64) {
+func (som *SOM) Train(data *Matrix, steps int, initialRadius, initialLearningRate float64) {
 	for step := 0; step < steps; step++ {
-		som.Step(data, step, steps, initialLearningRate)
+		som.Step(data, step, steps, initialRadius, initialLearningRate)
 	}
 }
 

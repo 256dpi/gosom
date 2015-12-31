@@ -58,7 +58,8 @@ func doTrain(config *config) {
 	bar := pb.StartNew(config.trainingSteps)
 
 	for step := 0; step < config.trainingSteps; step++ {
-		som.Step(data, step, config.trainingSteps, config.initialLearningRate)
+		initialRadius := math.Max(float64(som.Width), float64(som.Height)) / 2.0
+		som.Step(data, step, config.trainingSteps, initialRadius, config.initialLearningRate)
 		bar.Increment()
 	}
 
