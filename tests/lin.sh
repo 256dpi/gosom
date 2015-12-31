@@ -15,11 +15,11 @@ echo "---> preparing SOM"
 echo "---> training SOM"
 ../gosom train som.json data.csv
 
-echo "---> testing SOM"
-../gosom test som.json test.csv -k 25
-
 echo "---> plotting SOM"
 ../gosom plot som.json . -p lin
+
+echo "---> testing SOM"
+../gosom test som.json test.csv -k 25
 
 echo "---> opening folder"
 open .
