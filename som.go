@@ -109,31 +109,16 @@ func (som *SOM) Neighbors(input []float64, K int) []*Node {
 
 // Step applies one step of learning.
 func (som *SOM) Step(data *Matrix, step int, training *Training) {
-	// calculate position
-	progress := training.Progress(step)
-
-	// calculate learning rate
-	learningRate := training.InitialLearningRate * som.CF(progress)
-
-	// calculate neighborhood radius
-	radius := training.InitialRadius * som.CF(progress)
-
-	// get random input
+	learningRate := training.LearningRate(step)
+	radius := training.Radius(step)
 	input := data.RandomRow()
-
-	// get closest node to input
 	winningNode := som.Closest(input)
 
 	for _, node := range som.Nodes {
-		// calculate distance to winner
 		distance := som.D(winningNode.Position, node.Position)
 
-		// check inclusion in the radius (doubled to fit gaussian function)
 		if distance < radius*2 {
-			// calculate the influence
 			influence := som.NI(distance / radius)
-
-			// adjust node
 			node.Adjust(input, influence*learningRate)
 		}
 	}

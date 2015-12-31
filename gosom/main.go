@@ -58,6 +58,7 @@ func doTrain(config *config) {
 	initialRadius := math.Max(float64(som.Width), float64(som.Height)) / 2.0
 
 	training := gosom.NewTraining(
+		som,
 		config.trainingSteps,
 		config.initialLearningRate,
 		config.finalLearningRate,
@@ -154,7 +155,7 @@ func testHelper(data *gosom.Matrix, test *gosom.Matrix, tester func([]float64) [
 		var localErrors []float64
 
 		for j := test.Columns; j < data.Columns; j++ {
-			err := 100.0 / (data.Maximums[j] - data.Minimums[j]) * math.Abs(output[j] - data.Data[i][j])
+			err := 100.0 / (data.Maximums[j] - data.Minimums[j]) * math.Abs(output[j]-data.Data[i][j])
 			localErrors = append(localErrors, err)
 		}
 

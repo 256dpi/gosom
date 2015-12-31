@@ -1,8 +1,8 @@
 package gosom
 
 import (
-	"testing"
 	"strings"
+	"testing"
 
 	"github.com/stretchr/testify/require"
 )
@@ -16,7 +16,6 @@ func TestNewSOM(t *testing.T) {
 	require.Equal(t, "euclidean", som.DistanceFunction)
 	require.Equal(t, "cone", som.NeighborhoodFunction)
 }
-
 
 func TestLoadSOMFromJSON(t *testing.T) {
 	json := `{
