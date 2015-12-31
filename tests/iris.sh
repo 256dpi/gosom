@@ -15,16 +15,16 @@ sed -i.bak s/Iris-virginica/3/g data.csv
 rm *.bak
 
 echo "---> preparing SOM"
-gosom prepare som.json data.csv 50 50
+../gosom prepare som.json data.csv 50 50
 
 echo "---> training SOM"
-gosom train som.json data.csv
+../gosom train som.json data.csv
 
 echo "---> testing SOM"
-gosom test som.json data.csv -k 25
+../gosom test som.json data.csv -k 25
 
 echo "---> plotting SOM"
-gosom plot som.json . -p iris
+../gosom plot som.json . -p iris
 
 echo "---> opening folder"
 open .
