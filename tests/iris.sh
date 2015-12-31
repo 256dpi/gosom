@@ -15,22 +15,22 @@ sed -i.bak s/Iris-virginica/3/g data.csv
 rm *.bak
 
 echo "---> preparing SOM"
-../gosom prepare som.json data.csv 100 100 -n gaussian -c soft
+../gosom prepare som.json data.csv 15 15 -n gaussian -c soft
 
 echo "---> training SOM"
-../gosom train som.json data.csv -t 20000
+../gosom train som.json data.csv -t 100000
 
 echo "---> plotting trained SOM"
 ../gosom plot som.json . -p iris-trained
 
 echo "---> tuning SOM"
-../gosom train som.json data.csv -t 20000 -l 0.05 -r 25
+../gosom train som.json data.csv -t 100000 -l 0.05 -r 5
 
 echo "---> plotting tuned SOM"
 ../gosom plot som.json . -p iris-tuned
 
 echo "---> testing SOM"
-../gosom test som.json data.csv -k 50
+../gosom test som.json data.csv -k 5
 
 echo "---> opening folder"
 open .
