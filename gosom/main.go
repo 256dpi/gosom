@@ -36,6 +36,10 @@ func doPrepare(config *config) {
 	som := gosom.NewSOM(config.width, config.height)
 	data := loadData(config.data)
 
+	som.DistanceFunction = config.distanceFunction
+	som.NeighborhoodFunction = config.neighborhoodFunction
+	som.CoolingFunction = config.coolingFunction
+
 	switch config.initialization {
 	case "random":
 		som.InitializeWithRandomValues(data)
@@ -50,10 +54,6 @@ func doPrepare(config *config) {
 func doTrain(config *config) {
 	som := loadSOM(config.file)
 	data := loadData(config.data)
-
-	som.DistanceFunction = config.distanceFunction
-	som.NeighborhoodFunction = config.neighborhoodFunction
-	som.CoolingFunction = config.coolingFunction
 
 	initialRadius := math.Max(float64(som.Width), float64(som.Height)) / 2.0
 

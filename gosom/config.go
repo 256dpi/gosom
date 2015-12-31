@@ -39,8 +39,8 @@ func parseConfig() *config {
 	usage := `Self organizing maps for go.
 
 Usage:
-  gosom prepare <file> <data> <width> <height> [-i <im>]
-  gosom train <file> <data> [-t <ts> -l <lr> -m <lr> -d <df> -n <nf> -c <cf>]
+  gosom prepare <file> <data> <width> <height> [-i <im> -d <df> -n <nf> -c <cf>]
+  gosom train <file> <data> [-t <ts> -l <lr> -m <lr>]
   gosom classify <file> <input>
   gosom interpolate <file> <input> [-w -k <nn>]
   gosom plot <file> <directory> [-s <ns> -p <fp>]
@@ -51,12 +51,12 @@ Usage:
 
 Options:
   -i <im>  Initialization method (random, datapoints) [default: datapoints].
-  -t <ts>  Number of training steps [default: 10000].
-  -l <lr>  Initial learning rate [default: 0.5].
-  -m <lr>  Final learning rate [default: 0.05].
   -d <df>  Distance function (euclidean, manhattan) [default: euclidean].
   -n <nf>  Neighborhood function (bubble, cone, gaussian, epanechicov) [default: cone].
   -c <cf>  Cooling function (linear, soft, medium, hard) [default: linear].
+  -t <ts>  Number of training steps [default: 10000].
+  -l <lr>  Initial learning rate [default: 0.5].
+  -m <lr>  Final learning rate [default: 0.05].
   -k <nn>  Number of nearest neighbors to consider [default: 5].
   -w       Use weighted interpolation.
   -s <ns>  Size of the individual nodes [default: 10].
