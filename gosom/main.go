@@ -137,25 +137,24 @@ func doTest(config *config) {
 }
 
 func testHelper(data *gosom.Matrix, test *gosom.Matrix, tester func([]float64) []float64) {
-	errors := make([]float64, data.Rows)
+	allErrors := make([]float64, data.Rows)
 
 	for i := 0; i < data.Rows; i++ {
 		output := tester(test.Data[i])
-		errors[i] = avg(calculateErrors(data.Data[i], output, test.Columns))
-		fmt.Printf("  %.3f: %.3f (Error: %.2f%%)\n", data.Data[i], output, errors[i])
+
+		var localErrors []float64
+
+		for j := test.Columns; j < data.Columns; j++ {
+			err := 100.0 / (data.Maximums[j] - data.Minimums[j]) * math.Abs(output[j] - data.Data[i][j])
+			localErrors = append(localErrors, err)
+		}
+
+		allErrors[i] = avg(localErrors)
+
+		fmt.Printf("  %.3f: %.3f (Error: %.2f%%)\n", data.Data[i], output, allErrors[i])
 	}
 
-	fmt.Printf("  Min: %.2f%%, Max: %.2f%%, Avg: %.2f%%\n", floats.Min(errors), floats.Max(errors), avg(errors))
-}
-
-func calculateErrors(data, test []float64, offset int) []float64 {
-	var errors []float64
-
-	for i := offset; i < len(data); i++ {
-		errors = append(errors, math.Abs((test[i]-data[i])/data[i]*100))
-	}
-
-	return errors
+	fmt.Printf("  Min: %.2f%%, Max: %.2f%%, Avg: %.2f%%\n", floats.Min(allErrors), floats.Max(allErrors), avg(allErrors))
 }
 
 func doFunctions() {
