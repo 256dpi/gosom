@@ -25,9 +25,11 @@ func (t *Training) Progress(step int) float64 {
 }
 
 func (t *Training) LearningRate(step int) float64 {
-	return t.InitialLearningRate * t.SOM.CF(t.Progress(step))
+	r := t.InitialLearningRate - t.FinalLearningRate
+	return r * t.SOM.CF(t.Progress(step)) + t.FinalLearningRate
 }
 
 func (t *Training) Radius(step int) float64 {
-	return t.InitialRadius * t.SOM.CF(t.Progress(step))
+	r := t.InitialRadius - t.FinalRadius
+	return r * t.SOM.CF(t.Progress(step)) + t.FinalRadius
 }
