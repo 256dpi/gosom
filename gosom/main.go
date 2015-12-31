@@ -55,11 +55,20 @@ func doTrain(config *config) {
 	som.NeighborhoodFunction = config.neighborhoodFunction
 	som.CoolingFunction = config.coolingFunction
 
+	initialRadius := math.Max(float64(som.Width), float64(som.Height)) / 2.0
+
+	training := gosom.NewTraining(
+		config.trainingSteps,
+		config.initialLearningRate,
+		config.finalLearningRate,
+		initialRadius,
+		0.0,
+	)
+
 	bar := pb.StartNew(config.trainingSteps)
 
 	for step := 0; step < config.trainingSteps; step++ {
-		initialRadius := math.Max(float64(som.Width), float64(som.Height)) / 2.0
-		som.Step(data, step, config.trainingSteps, initialRadius, config.initialLearningRate)
+		som.Step(data, step, training)
 		bar.Increment()
 	}
 

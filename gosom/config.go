@@ -22,6 +22,7 @@ type config struct {
 	height               int
 	initialization       string
 	initialLearningRate  float64
+	finalLearningRate    float64
 	trainingSteps        int
 	distanceFunction     string
 	neighborhoodFunction string
@@ -39,7 +40,7 @@ func parseConfig() *config {
 
 Usage:
   gosom prepare <file> <data> <width> <height> [-i <im>]
-  gosom train <file> <data> [-l <lr> -t <ts> -d <df> -n <nf> -c <cf>]
+  gosom train <file> <data> [-t <ts> -l <lr> -m <lr> -d <df> -n <nf> -c <cf>]
   gosom classify <file> <input>
   gosom interpolate <file> <input> [-w -k <nn>]
   gosom plot <file> <directory> [-s <ns> -p <fp>]
@@ -50,8 +51,9 @@ Usage:
 
 Options:
   -i <im>  Initialization method (random, datapoints) [default: datapoints].
-  -l <lr>  Initial learning rate [default: 0.5].
   -t <ts>  Number of training steps [default: 10000].
+  -l <lr>  Initial learning rate [default: 0.5].
+  -m <lr>  Final learning rate [default: 0.05].
   -d <df>  Distance function (euclidean, manhattan) [default: euclidean].
   -n <nf>  Neighborhood function (bubble, cone, gaussian, epanechicov) [default: cone].
   -c <cf>  Cooling function (linear, soft, medium, hard) [default: linear].
@@ -84,6 +86,7 @@ Options:
 		height:               getInt(a["<height>"]),
 		initialization:       getString(a["-i"]),
 		initialLearningRate:  getFloat(a["-l"]),
+		finalLearningRate:    getFloat(a["-m"]),
 		trainingSteps:        getInt(a["-t"]),
 		distanceFunction:     getString(a["-d"]),
 		neighborhoodFunction: getString(a["-n"]),
