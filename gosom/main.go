@@ -141,11 +141,21 @@ func testHelper(data *gosom.Matrix, test *gosom.Matrix, tester func([]float64) [
 
 	for i := 0; i < data.Rows; i++ {
 		output := tester(test.Data[i])
-		errors[i] = avg(getErrors(data.Data[i], output, test.Columns))
+		errors[i] = avg(calculateErrors(data.Data[i], output, test.Columns))
 		fmt.Printf("  %.3f: %.3f (Error: %.2f%%)\n", data.Data[i], output, errors[i])
 	}
 
 	fmt.Printf("  Min: %.2f%%, Max: %.2f%%, Avg: %.2f%%\n", floats.Min(errors), floats.Max(errors), avg(errors))
+}
+
+func calculateErrors(data, test []float64, offset int) []float64 {
+	var errors []float64
+
+	for i := offset; i < len(data); i++ {
+		errors = append(errors, math.Abs((test[i]-data[i])/data[i]*100))
+	}
+
+	return errors
 }
 
 func doFunctions() {
@@ -211,16 +221,6 @@ func readInput(input string) []float64 {
 	}
 
 	return floats
-}
-
-func getErrors(data, test []float64, offset int) []float64 {
-	var errors []float64
-
-	for i := offset; i < len(data); i++ {
-		errors = append(errors, math.Abs((test[i]-data[i])/data[i]*100))
-	}
-
-	return errors
 }
 
 func avg(v []float64) float64 {
