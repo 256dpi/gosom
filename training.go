@@ -30,11 +30,11 @@ func (t *Training) Progress(step int) float64 {
 // LearningRate calculates the current learning rate.
 func (t *Training) LearningRate(step int) float64 {
 	r := t.InitialLearningRate - t.FinalLearningRate
-	return r * t.SOM.CF(t.Progress(step)) + t.FinalLearningRate
+	return r*t.SOM.CF(t.Progress(step)) + t.FinalLearningRate
 }
 
 // Radius calculates the current radius.
 func (t *Training) Radius(step int) float64 {
 	r := t.InitialRadius - t.FinalRadius
-	return r * t.SOM.CF(t.Progress(step)) + t.FinalRadius
+	return r*t.SOM.CF(t.Progress(step)) + t.FinalRadius
 }
