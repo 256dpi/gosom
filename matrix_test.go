@@ -3,9 +3,8 @@ package gosom
 import (
 	"strings"
 	"testing"
-
+	
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 var slice = [][]float64{
@@ -16,13 +15,13 @@ var slice = [][]float64{
 func TestMatrix(t *testing.T) {
 	m := NewMatrix(slice)
 
-	require.Equal(t, slice, m.Data)
-	require.Equal(t, 2, m.Rows)
-	require.Equal(t, 3, m.Columns)
-	require.Equal(t, []float64{0.0, 0.5, 0.0}, m.Minimums)
-	require.Equal(t, []float64{1.0, 0.5, 1.0}, m.Maximums)
-	require.Equal(t, 0.0, m.Minimum)
-	require.Equal(t, 1.0, m.Maximum)
+	assert.Equal(t, slice, m.Data)
+	assert.Equal(t, 2, m.Rows)
+	assert.Equal(t, 3, m.Columns)
+	assert.Equal(t, []float64{0.0, 0.5, 0.0}, m.Minimums)
+	assert.Equal(t, []float64{1.0, 0.5, 1.0}, m.Maximums)
+	assert.Equal(t, 0.0, m.Minimum)
+	assert.Equal(t, 1.0, m.Maximum)
 }
 
 func TestSubMatrix1(t *testing.T) {
@@ -34,7 +33,7 @@ func TestSubMatrix1(t *testing.T) {
 		{0.0, 0.5},
 	}
 
-	require.Equal(t, d, sm.Data)
+	assert.Equal(t, d, sm.Data)
 }
 
 func TestSubMatrix2(t *testing.T) {
@@ -46,7 +45,7 @@ func TestSubMatrix2(t *testing.T) {
 		{1.0},
 	}
 
-	require.Equal(t, d, sm.Data)
+	assert.Equal(t, d, sm.Data)
 }
 
 func TestRandomRow(t *testing.T) {
@@ -55,7 +54,7 @@ func TestRandomRow(t *testing.T) {
 	t1 := assert.ObjectsAreEqual(m.RandomRow(), slice[0])
 	t2 := assert.ObjectsAreEqual(m.RandomRow(), slice[1])
 
-	require.True(t, t1 || t2)
+	assert.True(t, t1 || t2)
 }
 
 func TestLoadMatrixFromCSV(t *testing.T) {
@@ -64,8 +63,8 @@ func TestLoadMatrixFromCSV(t *testing.T) {
 
 	m, err := LoadMatrixFromCSV(reader)
 
-	require.NoError(t, err)
-	require.Equal(t, slice, m.Data)
+	assert.NoError(t, err)
+	assert.Equal(t, slice, m.Data)
 }
 
 func TestLoadMatrixFromJSON(t *testing.T) {
@@ -74,7 +73,7 @@ func TestLoadMatrixFromJSON(t *testing.T) {
 
 	m, err := LoadMatrixFromJSON(reader)
 
-	require.NoError(t, err)
-	require.Equal(t, slice, m.Data)
+	assert.NoError(t, err)
+	assert.Equal(t, slice, m.Data)
 
 }

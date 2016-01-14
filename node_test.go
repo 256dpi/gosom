@@ -3,7 +3,7 @@ package gosom
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAdjust1(t *testing.T) {
@@ -12,7 +12,7 @@ func TestAdjust1(t *testing.T) {
 
 	n.Adjust([]float64{0.0, 0.0}, 0.5)
 
-	require.Equal(t, []float64{0.5, 0.5}, n.Weights)
+	assert.Equal(t, []float64{0.5, 0.5}, n.Weights)
 }
 
 func TestAdjust2(t *testing.T) {
@@ -21,7 +21,7 @@ func TestAdjust2(t *testing.T) {
 
 	n.Adjust([]float64{1.0, 1.0}, 0.5)
 
-	require.Equal(t, []float64{0.5, 0.5}, n.Weights)
+	assert.Equal(t, []float64{0.5, 0.5}, n.Weights)
 }
 
 func TestAdjust3(t *testing.T) {
@@ -30,7 +30,7 @@ func TestAdjust3(t *testing.T) {
 
 	n.Adjust([]float64{1.0, 1.0}, 1.0)
 
-	require.Equal(t, []float64{1.0, 1.0}, n.Weights)
+	assert.Equal(t, []float64{1.0, 1.0}, n.Weights)
 }
 
 func TestAdjust4(t *testing.T) {
@@ -39,17 +39,17 @@ func TestAdjust4(t *testing.T) {
 
 	n.Adjust([]float64{0.0, 0.0}, 1.0)
 
-	require.Equal(t, []float64{0.0, 0.0}, n.Weights)
+	assert.Equal(t, []float64{0.0, 0.0}, n.Weights)
 }
 
 func TestX(t *testing.T) {
 	n := NewNode(2, 3, 0)
 
-	require.Equal(t, 2, n.X())
+	assert.Equal(t, 2, n.X())
 }
 
 func TestY(t *testing.T) {
 	n := NewNode(2, 3, 0)
 
-	require.Equal(t, 3, n.Y())
+	assert.Equal(t, 3, n.Y())
 }

@@ -3,7 +3,7 @@ package gosom
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewLattice(t *testing.T) {
@@ -13,8 +13,8 @@ func TestNewLattice(t *testing.T) {
 		for x := 0; x < 10; x++ {
 			i := y*10 + x
 
-			require.Equal(t, []float64{float64(x), float64(y)}, l[i].Position)
-			require.Equal(t, []float64{0.0, 0.0}, l[i].Weights)
+			assert.Equal(t, []float64{float64(x), float64(y)}, l[i].Position)
+			assert.Equal(t, []float64{0.0, 0.0}, l[i].Weights)
 		}
 	}
 }
@@ -34,8 +34,8 @@ func TestLatticeSorting(t *testing.T) {
 		return n1.Weights[0] < n2.Weights[0]
 	})
 
-	require.Equal(t, 3.0, l2[0].Weights[0])
-	require.Equal(t, 0.0, l2[3].Weights[0])
-	require.Equal(t, 0.0, l3[0].Weights[0])
-	require.Equal(t, 3.0, l3[3].Weights[0])
+	assert.Equal(t, 3.0, l2[0].Weights[0])
+	assert.Equal(t, 0.0, l2[3].Weights[0])
+	assert.Equal(t, 0.0, l3[0].Weights[0])
+	assert.Equal(t, 3.0, l3[3].Weights[0])
 }
