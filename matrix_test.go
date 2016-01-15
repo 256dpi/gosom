@@ -3,6 +3,7 @@ package gosom
 import (
 	"strings"
 	"testing"
+	"fmt"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -10,6 +11,11 @@ import (
 var slice = [][]float64{
 	{1.0, 0.5, 0.0},
 	{0.0, 0.5, 1.0},
+}
+
+var sliceNull = [][]float64{
+	{1.0, 0.5, NotANumber},
+	{NotANumber, 0.5, 1.0},
 }
 
 func TestMatrix(t *testing.T) {
@@ -67,12 +73,14 @@ func TestLoadMatrixFromCSV(t *testing.T) {
 	assert.Equal(t, slice, m.Data)
 }
 
-func TestLoadMatrixFromCSVError(t *testing.T) {
-	csv := "a,0.5,0.0\n0.0,0.5,1.0"
+func TestLoadMatrixFromCSVNull(t *testing.T) {
+	csv := "1.0,0.5,NULL\nNULL,0.5,1.0"
 	reader := strings.NewReader(csv)
 
-	_, err := LoadMatrixFromCSV(reader)
-	assert.Error(t, err)
+	m, err := LoadMatrixFromCSV(reader)
+
+	assert.NoError(t, err)
+	assert.Equal(t, fmt.Sprint(sliceNull), fmt.Sprint(m.Data))
 }
 
 func TestLoadMatrixFromJSON(t *testing.T) {
@@ -83,6 +91,16 @@ func TestLoadMatrixFromJSON(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, slice, m.Data)
+}
+
+func TestLoadMatrixFromJSONNull(t *testing.T) {
+	json := "[[1.0,0.5,null],[null,0.5,1.0]]"
+	reader := strings.NewReader(json)
+
+	m, err := LoadMatrixFromJSON(reader)
+
+	assert.NoError(t, err)
+	assert.Equal(t, fmt.Sprint(sliceNull), fmt.Sprint(m.Data))
 }
 
 func TestLoadMatrixFromJSONError(t *testing.T) {

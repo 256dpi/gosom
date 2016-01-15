@@ -20,6 +20,8 @@ type Matrix struct {
 	Maximum  float64
 }
 
+var NotANumber = math.NaN()
+
 // NewMatrix will create a new Matrix and work out the meta information.
 // The function expects the float slice to be consistent in columns.
 func NewMatrix(data [][]float64) *Matrix {
@@ -84,10 +86,10 @@ func LoadMatrixFromCSV(source io.Reader) (*Matrix, error) {
 		for j, value := range row {
 			f, err := strconv.ParseFloat(value, 64)
 			if err != nil {
-				return nil, err
+				floats[i][j] = NotANumber
+			} else {
+				floats[i][j] = f
 			}
-
-			floats[i][j] = f
 		}
 	}
 
@@ -98,11 +100,25 @@ func LoadMatrixFromCSV(source io.Reader) (*Matrix, error) {
 func LoadMatrixFromJSON(source io.Reader) (*Matrix, error) {
 	reader := json.NewDecoder(source)
 
-	var floats [][]float64
+	var data [][]interface{}
 
-	err := reader.Decode(&floats)
+	err := reader.Decode(&data)
 	if err != nil {
 		return nil, err
+	}
+
+	floats := make([][]float64, len(data))
+
+	for i:=0; i<len(data); i++ {
+		floats[i] = make([]float64, len(data[i]))
+
+		for j:=0; j<len(data[i]); j++ {
+			if f, ok := data[i][j].(float64); ok {
+				floats[i][j] = f
+			} else {
+				floats[i][j] = NotANumber
+			}
+		}
 	}
 
 	return NewMatrix(floats), nil
