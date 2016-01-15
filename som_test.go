@@ -46,6 +46,24 @@ func TestLoadSOMFromJSON(t *testing.T) {
 	assert.Equal(t, []float64{0.1, 0.2}, som.Nodes[0].Weights)
 }
 
+func TestLoadSOMFromJSONError(t *testing.T) {
+	json := `-`
+	reader := strings.NewReader(json)
+
+	_, err := LoadSOMFromJSON(reader)
+	assert.Error(t, err)
+}
+
+func TestInitialization(t *testing.T) {
+	m := NewMatrix(slice)
+
+	som := NewSOM(5, 5)
+	som.InitializeWithRandomValues(m)
+	som.InitializeWithDataPoints(m)
+
+	// TODO: check node weights
+}
+
 // Init...
 
 func TestClosest(t *testing.T) {
