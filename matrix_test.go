@@ -67,6 +67,14 @@ func TestLoadMatrixFromCSV(t *testing.T) {
 	assert.Equal(t, slice, m.Data)
 }
 
+func TestLoadMatrixFromCSVError(t *testing.T) {
+	csv := "a,0.5,0.0\n0.0,0.5,1.0"
+	reader := strings.NewReader(csv)
+
+	_, err := LoadMatrixFromCSV(reader)
+	assert.Error(t, err)
+}
+
 func TestLoadMatrixFromJSON(t *testing.T) {
 	json := "[[1.0,0.5,0.0],[0.0,0.5,1.0]]"
 	reader := strings.NewReader(json)
@@ -75,5 +83,12 @@ func TestLoadMatrixFromJSON(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, slice, m.Data)
+}
 
+func TestLoadMatrixFromJSONError(t *testing.T) {
+	json := "-"
+	reader := strings.NewReader(json)
+
+	_, err := LoadMatrixFromJSON(reader)
+	assert.Error(t, err)
 }
