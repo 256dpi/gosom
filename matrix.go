@@ -7,6 +7,8 @@ import (
 	"math"
 	"math/rand"
 	"strconv"
+
+	"github.com/gonum/floats"
 )
 
 // A Matrix holds and extends a two dimensional float slice.
@@ -20,8 +22,6 @@ type Matrix struct {
 	Maximum  float64
 }
 
-var NotANumber = math.NaN()
-
 // NewMatrix will create a new Matrix and work out the meta information.
 // The function expects the float slice to be consistent in columns.
 func NewMatrix(data [][]float64) *Matrix {
@@ -29,26 +29,31 @@ func NewMatrix(data [][]float64) *Matrix {
 		Data:     data,
 		Rows:     len(data),
 		Columns:  len(data[0]),
-		Minimums: make([]float64, len(data[0])),
-		Maximums: make([]float64, len(data[0])),
 	}
 
-	copy(ds.Minimums, ds.Data[0])
-	copy(ds.Maximums, ds.Data[0])
+	ds.Minimums = make([]float64, ds.Columns)
+	ds.Maximums = make([]float64, ds.Columns)
 
-	ds.Minimum = ds.Data[0][0]
-	ds.Maximum = ds.Data[0][0]
-
-	for j := 0; j < ds.Rows; j++ {
-		for i := 0; i < ds.Columns; i++ {
-			ds.Minimums[i] = math.Min(ds.Minimums[i], ds.Data[j][i])
-			ds.Maximums[i] = math.Max(ds.Maximums[i], ds.Data[j][i])
-			ds.Minimum = math.Min(ds.Minimum, ds.Data[j][i])
-			ds.Maximum = math.Max(ds.Maximum, ds.Data[j][i])
-		}
+	for i := 0; i < ds.Columns; i++ {
+		ds.Minimums[i] = floats.Min(clearNANs(ds.Column(i)))
+		ds.Maximums[i] = floats.Max(clearNANs(ds.Column(i)))
 	}
+
+	ds.Minimum = floats.Min(ds.Minimums)
+	ds.Maximum = floats.Max(ds.Maximums)
 
 	return ds
+}
+
+// Column returns all values in a column.
+func (m *Matrix) Column(col int) []float64 {
+	out := make([]float64, m.Rows)
+
+	for i, row := range m.Data {
+		out[i] = row[col]
+	}
+
+	return out
 }
 
 // RandomRow returns a random row from the matrix.
@@ -86,7 +91,7 @@ func LoadMatrixFromCSV(source io.Reader) (*Matrix, error) {
 		for j, value := range row {
 			f, err := strconv.ParseFloat(value, 64)
 			if err != nil {
-				floats[i][j] = NotANumber
+				floats[i][j] = math.NaN()
 			} else {
 				floats[i][j] = f
 			}
@@ -116,7 +121,7 @@ func LoadMatrixFromJSON(source io.Reader) (*Matrix, error) {
 			if f, ok := data[i][j].(float64); ok {
 				floats[i][j] = f
 			} else {
-				floats[i][j] = NotANumber
+				floats[i][j] = math.NaN()
 			}
 		}
 	}

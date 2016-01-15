@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 	"fmt"
+	"math"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -14,13 +15,11 @@ var slice = [][]float64{
 }
 
 var sliceNull = [][]float64{
-	{1.0, 0.5, NotANumber},
-	{NotANumber, 0.5, 1.0},
+	{1.0, 0.5, math.NaN()},
+	{math.NaN(), 0.5, 1.0},
 }
 
-func TestMatrix(t *testing.T) {
-	m := NewMatrix(slice)
-
+func abstractTestSlice(t *testing.T, m *Matrix) {
 	assert.Equal(t, slice, m.Data)
 	assert.Equal(t, 2, m.Rows)
 	assert.Equal(t, 3, m.Columns)
@@ -28,6 +27,21 @@ func TestMatrix(t *testing.T) {
 	assert.Equal(t, []float64{1.0, 0.5, 1.0}, m.Maximums)
 	assert.Equal(t, 0.0, m.Minimum)
 	assert.Equal(t, 1.0, m.Maximum)
+}
+
+func abstractTestSliceNull(t *testing.T, m *Matrix) {
+	assert.Equal(t, fmt.Sprint(sliceNull), fmt.Sprint(m.Data))
+	assert.Equal(t, 2, m.Rows)
+	assert.Equal(t, 3, m.Columns)
+	assert.Equal(t, []float64{1.0, 0.5, 1.0}, m.Minimums)
+	assert.Equal(t, []float64{1.0, 0.5, 1.0}, m.Maximums)
+	assert.Equal(t, 0.5, m.Minimum)
+	assert.Equal(t, 1.0, m.Maximum)
+}
+
+func TestMatrix(t *testing.T) {
+	m := NewMatrix(slice)
+	abstractTestSlice(t, m)
 }
 
 func TestSubMatrix1(t *testing.T) {
@@ -70,7 +84,7 @@ func TestLoadMatrixFromCSV(t *testing.T) {
 	m, err := LoadMatrixFromCSV(reader)
 
 	assert.NoError(t, err)
-	assert.Equal(t, slice, m.Data)
+	abstractTestSlice(t, m)
 }
 
 func TestLoadMatrixFromCSVNull(t *testing.T) {
@@ -78,9 +92,8 @@ func TestLoadMatrixFromCSVNull(t *testing.T) {
 	reader := strings.NewReader(csv)
 
 	m, err := LoadMatrixFromCSV(reader)
-
 	assert.NoError(t, err)
-	assert.Equal(t, fmt.Sprint(sliceNull), fmt.Sprint(m.Data))
+	abstractTestSliceNull(t, m)
 }
 
 func TestLoadMatrixFromJSON(t *testing.T) {
@@ -88,9 +101,8 @@ func TestLoadMatrixFromJSON(t *testing.T) {
 	reader := strings.NewReader(json)
 
 	m, err := LoadMatrixFromJSON(reader)
-
 	assert.NoError(t, err)
-	assert.Equal(t, slice, m.Data)
+	abstractTestSlice(t, m)
 }
 
 func TestLoadMatrixFromJSONNull(t *testing.T) {
@@ -98,9 +110,8 @@ func TestLoadMatrixFromJSONNull(t *testing.T) {
 	reader := strings.NewReader(json)
 
 	m, err := LoadMatrixFromJSON(reader)
-
 	assert.NoError(t, err)
-	assert.Equal(t, fmt.Sprint(sliceNull), fmt.Sprint(m.Data))
+	abstractTestSliceNull(t, m)
 }
 
 func TestLoadMatrixFromJSONError(t *testing.T) {
