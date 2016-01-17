@@ -20,29 +20,37 @@ type Matrix struct {
 	Maximums []float64
 	Minimum  float64
 	Maximum  float64
+	Nulls    bool
 }
 
 // NewMatrix will create a new Matrix and work out the meta information.
 // The function expects the float slice to be consistent in columns.
 func NewMatrix(data [][]float64) *Matrix {
-	ds := &Matrix{
+	m := &Matrix{
 		Data:     data,
 		Rows:     len(data),
 		Columns:  len(data[0]),
 	}
 
-	ds.Minimums = make([]float64, ds.Columns)
-	ds.Maximums = make([]float64, ds.Columns)
+	m.Minimums = make([]float64, m.Columns)
+	m.Maximums = make([]float64, m.Columns)
 
-	for i := 0; i < ds.Columns; i++ {
-		ds.Minimums[i] = floats.Min(clearNANs(ds.Column(i)))
-		ds.Maximums[i] = floats.Max(clearNANs(ds.Column(i)))
+	for i := 0; i < m.Columns; i++ {
+		rawColumn := m.Column(i)
+		clearedColumn := clearNANs(rawColumn)
+
+		m.Minimums[i] = floats.Min(clearedColumn)
+		m.Maximums[i] = floats.Max(clearedColumn)
+
+		if floats.HasNaN(rawColumn) {
+			m.Nulls = true
+		}
 	}
 
-	ds.Minimum = floats.Min(ds.Minimums)
-	ds.Maximum = floats.Max(ds.Maximums)
+	m.Minimum = floats.Min(m.Minimums)
+	m.Maximum = floats.Max(m.Maximums)
 
-	return ds
+	return m
 }
 
 // Column returns all values in a column.

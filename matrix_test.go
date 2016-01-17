@@ -27,6 +27,7 @@ func abstractTestSlice(t *testing.T, m *Matrix) {
 	assert.Equal(t, []float64{1.0, 0.5, 1.0}, m.Maximums)
 	assert.Equal(t, 0.0, m.Minimum)
 	assert.Equal(t, 1.0, m.Maximum)
+	assert.False(t, m.Nulls)
 }
 
 func abstractTestSliceNull(t *testing.T, m *Matrix) {
@@ -37,6 +38,7 @@ func abstractTestSliceNull(t *testing.T, m *Matrix) {
 	assert.Equal(t, []float64{1.0, 0.5, 1.0}, m.Maximums)
 	assert.Equal(t, 0.5, m.Minimum)
 	assert.Equal(t, 1.0, m.Maximum)
+	assert.True(t, m.Nulls)
 }
 
 func TestMatrix(t *testing.T) {
