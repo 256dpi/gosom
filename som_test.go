@@ -65,8 +65,6 @@ func TestInitialization(t *testing.T) {
 	// TODO: check node weights
 }
 
-// Init...
-
 func TestClosest(t *testing.T) {
 	som := NewSOM(3, 3)
 	som.Nodes = NewLattice(3, 3, 2)
