@@ -44,6 +44,11 @@ func doPrepare(config *config) {
 	case "random":
 		som.InitializeWithRandomValues(data)
 	case "datapoints":
+		if data.NaNs {
+			fmt.Println("Can't initialize with data points if data contains NaNs!")
+			os.Exit(1)
+		}
+
 		som.InitializeWithDataPoints(data)
 	}
 
