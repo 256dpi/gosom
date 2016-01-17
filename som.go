@@ -44,6 +44,11 @@ func LoadSOMFromJSON(source io.Reader) (*SOM, error) {
 	return som, nil
 }
 
+// InitializeWithZeroes initializes the nodes with zero initialized dimensions.
+func (som *SOM) InitializeWithZeroes(dimensions int) {
+	som.Nodes = NewLattice(som.Width, som.Height, dimensions)
+}
+
 // InitializeWithRandomValues initializes the nodes with random values between
 // the calculated minimums and maximums per dimension.
 func (som *SOM) InitializeWithRandomValues(data *Matrix) {

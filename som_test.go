@@ -58,6 +58,7 @@ func TestInitialization(t *testing.T) {
 	m := NewMatrix(slice)
 
 	som := NewSOM(5, 5)
+	som.InitializeWithZeroes(m.Columns)
 	som.InitializeWithRandomValues(m)
 	som.InitializeWithDataPoints(m)
 
