@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# This test trains the SOM using the well known iris data set. The SOM is
+# expected to classify the flowers properly.
+#
+# Todo:
+# - split data set into a train and test only set.
+
 echo "---> cleaning and creating './tmp'"
 rm -rf ./tmp
 mkdir -p ./tmp

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This test trains the SOM using an simple inverted linear data set. The SOM is
+# expected to properly classify and interpolate the test values.
+
 echo "---> cleaning and creating './tmp'"
 rm -rf ./tmp
 mkdir -p ./tmp
