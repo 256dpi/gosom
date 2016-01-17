@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # This test trains the SOM using an simple inverted linear data set. The SOM is
 # expected to properly classify and interpolate the test values.

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # This test trains the SOM using the well known iris data set. The SOM is
 # expected to classify the flowers properly.
