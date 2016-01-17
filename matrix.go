@@ -76,7 +76,6 @@ func (m *Matrix) SubMatrix(start, length int) *Matrix {
 // LoadMatrixFromCSV reads CSV data and returns a new matrix.
 func LoadMatrixFromCSV(source io.Reader) (*Matrix, error) {
 	reader := csv.NewReader(source)
-	reader.FieldsPerRecord = -1
 
 	data, err := reader.ReadAll()
 	if err != nil {

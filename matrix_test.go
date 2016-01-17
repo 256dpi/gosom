@@ -96,6 +96,14 @@ func TestLoadMatrixFromCSVNull(t *testing.T) {
 	abstractTestSliceNull(t, m)
 }
 
+func TestLoadMatrixFromCSVError(t *testing.T) {
+	csv := "1.0,0.5,0.0\n0.0,0.5,1.0,2.0"
+	reader := strings.NewReader(csv)
+
+	_, err := LoadMatrixFromCSV(reader)
+	assert.Error(t, err)
+}
+
 func TestLoadMatrixFromJSON(t *testing.T) {
 	json := "[[1.0,0.5,0.0],[0.0,0.5,1.0]]"
 	reader := strings.NewReader(json)
