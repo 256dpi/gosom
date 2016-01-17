@@ -28,13 +28,13 @@ echo "---> training SOM"
 ../gosom train som.json data.csv -t 100000
 
 echo "---> plotting trained SOM"
-../gosom plot som.json . -p iris-trained
+../gosom plot som.json . -p trained
 
 echo "---> tuning SOM"
 ../gosom train som.json data.csv -t 100000 -l 0.05 -r 5
 
 echo "---> plotting tuned SOM"
-../gosom plot som.json . -p iris-tuned
+../gosom plot som.json . -p tuned
 
 echo "---> testing SOM"
 ../gosom test som.json data.csv -k 5
