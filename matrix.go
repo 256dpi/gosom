@@ -20,7 +20,7 @@ type Matrix struct {
 	Maximums []float64
 	Minimum  float64
 	Maximum  float64
-	Nulls    bool
+	NaNs     bool
 }
 
 // NewMatrix will create a new Matrix and work out the meta information.
@@ -43,7 +43,7 @@ func NewMatrix(data [][]float64) *Matrix {
 		m.Maximums[i] = floats.Max(clearedColumn)
 
 		if floats.HasNaN(rawColumn) {
-			m.Nulls = true
+			m.NaNs = true
 		}
 	}
 

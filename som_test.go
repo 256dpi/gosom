@@ -3,6 +3,7 @@ package gosom
 import (
 	"strings"
 	"testing"
+	"math"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -73,6 +74,14 @@ func TestClosest(t *testing.T) {
 	assert.Equal(t, som.Closest([]float64{0.0, 1.0}), som.Nodes[4])
 }
 
+func TestClosestWithNaNs(t *testing.T) {
+	som := NewSOM(3, 3)
+	som.Nodes = NewLattice(3, 3, 2)
+	som.Nodes[4].Weights[1] = 1.0
+
+	assert.Equal(t, som.Closest([]float64{math.NaN(), 1.0}), som.Nodes[4])
+}
+
 func TestNeighbors(t *testing.T) {
 	som := NewSOM(3, 3)
 	som.Nodes = NewLattice(3, 3, 2)
@@ -81,4 +90,14 @@ func TestNeighbors(t *testing.T) {
 	som.Nodes[2].Weights[1] = 0.8
 
 	assert.Equal(t, som.Neighbors([]float64{0.0, 1.0}, 3), []*Node{som.Nodes[0], som.Nodes[1], som.Nodes[2]})
+}
+
+func TestNeighborsWithNaNs(t *testing.T) {
+	som := NewSOM(3, 3)
+	som.Nodes = NewLattice(3, 3, 2)
+	som.Nodes[0].Weights[1] = 1.0
+	som.Nodes[1].Weights[1] = 0.9
+	som.Nodes[2].Weights[1] = 0.8
+
+	assert.Equal(t, som.Neighbors([]float64{math.NaN(), 1.0}, 3), []*Node{som.Nodes[0], som.Nodes[1], som.Nodes[2]})
 }

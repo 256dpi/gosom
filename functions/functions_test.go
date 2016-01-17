@@ -19,6 +19,12 @@ func TestEuclideanDistance(t *testing.T) {
 		[]float64{0.0, 1.0},
 		[]float64{0.0, 0.0},
 	))
+
+	assert.Equal(t, 1.0, Distance(
+		"euclidean",
+		[]float64{math.NaN(), 1.0},
+		[]float64{0.5, 0.0},
+	))
 }
 
 func TestManhattanDistance(t *testing.T) {
@@ -32,6 +38,12 @@ func TestManhattanDistance(t *testing.T) {
 		"manhattan",
 		[]float64{0.0, 1.0},
 		[]float64{0.0, 0.0},
+	))
+
+	assert.Equal(t, 1.0, Distance(
+		"manhattan",
+		[]float64{math.NaN(), 1.0},
+		[]float64{0.5, 0.0},
 	))
 }
 

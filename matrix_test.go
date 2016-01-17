@@ -14,7 +14,7 @@ var slice = [][]float64{
 	{0.0, 0.5, 1.0},
 }
 
-var sliceNull = [][]float64{
+var sliceNaN = [][]float64{
 	{1.0, 0.5, math.NaN()},
 	{math.NaN(), 0.5, 1.0},
 }
@@ -27,18 +27,18 @@ func abstractTestSlice(t *testing.T, m *Matrix) {
 	assert.Equal(t, []float64{1.0, 0.5, 1.0}, m.Maximums)
 	assert.Equal(t, 0.0, m.Minimum)
 	assert.Equal(t, 1.0, m.Maximum)
-	assert.False(t, m.Nulls)
+	assert.False(t, m.NaNs)
 }
 
-func abstractTestSliceNull(t *testing.T, m *Matrix) {
-	assert.Equal(t, fmt.Sprint(sliceNull), fmt.Sprint(m.Data))
+func abstractTestSliceNaN(t *testing.T, m *Matrix) {
+	assert.Equal(t, fmt.Sprint(sliceNaN), fmt.Sprint(m.Data))
 	assert.Equal(t, 2, m.Rows)
 	assert.Equal(t, 3, m.Columns)
 	assert.Equal(t, []float64{1.0, 0.5, 1.0}, m.Minimums)
 	assert.Equal(t, []float64{1.0, 0.5, 1.0}, m.Maximums)
 	assert.Equal(t, 0.5, m.Minimum)
 	assert.Equal(t, 1.0, m.Maximum)
-	assert.True(t, m.Nulls)
+	assert.True(t, m.NaNs)
 }
 
 func TestMatrix(t *testing.T) {
@@ -95,7 +95,7 @@ func TestLoadMatrixFromCSVNull(t *testing.T) {
 
 	m, err := LoadMatrixFromCSV(reader)
 	assert.NoError(t, err)
-	abstractTestSliceNull(t, m)
+	abstractTestSliceNaN(t, m)
 }
 
 func TestLoadMatrixFromCSVError(t *testing.T) {
@@ -115,13 +115,13 @@ func TestLoadMatrixFromJSON(t *testing.T) {
 	abstractTestSlice(t, m)
 }
 
-func TestLoadMatrixFromJSONNull(t *testing.T) {
+func TestLoadMatrixFromJSONull(t *testing.T) {
 	json := "[[1.0,0.5,null],[null,0.5,1.0]]"
 	reader := strings.NewReader(json)
 
 	m, err := LoadMatrixFromJSON(reader)
 	assert.NoError(t, err)
-	abstractTestSliceNull(t, m)
+	abstractTestSliceNaN(t, m)
 }
 
 func TestLoadMatrixFromJSONError(t *testing.T) {

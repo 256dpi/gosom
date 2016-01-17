@@ -12,11 +12,17 @@ type CoolingFunction func(progress float64) (factor float64)
 type NeighborhoodFunction func(distance float64) (influence float64)
 
 // EuclideanDistance returns the euclidean distance between two points.
+//
+// Note: Dimensions that include NaNs are ignored.
 func EuclideanDistance(from, to []float64) (distance float64) {
 	d := 0.0
 	l := min(len(from), len(to))
 
 	for i := 0; i < l; i++ {
+		if math.IsNaN(from[i]) || math.IsNaN(to[i]) {
+			continue
+		}
+
 		d += (from[i] - to[i]) * (from[i] - to[i])
 	}
 
@@ -24,11 +30,17 @@ func EuclideanDistance(from, to []float64) (distance float64) {
 }
 
 // ManhattanDistance returns the manhattan distance between two points.
+//
+// Note: Dimensions that include NaNs are ignored.
 func ManhattanDistance(from, to []float64) (distance float64) {
 	d := 0.0
 	l := min(len(from), len(to))
 
 	for i := 0; i < l; i++ {
+		if math.IsNaN(from[i]) || math.IsNaN(to[i]) {
+			continue
+		}
+
 		d += math.Abs(to[i] - from[i])
 	}
 
