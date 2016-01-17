@@ -5,9 +5,22 @@ rm -rf ./tmp
 mkdir -p ./tmp
 cd ./tmp
 
-echo "---> copy data set"
-cp ../lin.csv ./data.csv
-cp ../lin.test.csv ./test.csv
+echo "---> write data set"
+cat <<EOF > ./data.csv
+0.0,4.0
+1.0,3.0
+2.0,2.0
+3.0,1.0
+4.0,0.0
+EOF
+
+echo "---> write test set"
+cat <<EOF > ./test.csv
+0.5,3.5
+1.5,2.5
+2.5,1.5
+3.5,0.5
+EOF
 
 echo "---> preparing SOM"
 ../gosom prepare som.json data.csv 100 100
