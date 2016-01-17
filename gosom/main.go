@@ -130,7 +130,7 @@ func doInterpolation(config *config) {
 func doTest(config *config) {
 	som := loadSOM(config.file)
 	data := loadData(config.data)
-	test := data.SubMatrix(0, config.testDimensions)
+	test := data.SubMatrix(0, data.Columns-config.testDimensions)
 
 	fmt.Println("Classification tests:")
 	testHelper(data, test, func(input []float64) []float64 {
