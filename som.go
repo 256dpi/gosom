@@ -63,6 +63,9 @@ func (som *SOM) InitializeWithRandomValues(data *Matrix) {
 }
 
 // InitializeWithDataPoints initializes the nodes with random data points.
+//
+// Note: Do not use this function if your data set includes null values. Use
+// InitializeWithRandomValues instead.
 func (som *SOM) InitializeWithDataPoints(data *Matrix) {
 	som.Nodes = NewLattice(som.Width, som.Height, data.Columns)
 
