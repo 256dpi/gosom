@@ -1,5 +1,7 @@
 package gosom
 
+import "math"
+
 // A Node is a single neuron in a self organizing map.
 type Node struct {
 	Position []float64
@@ -25,10 +27,16 @@ func (n *Node) Y() int {
 }
 
 // Adjust makes the node more alike to the input based on the influence.
+//
+// Note: Dimensions that include NaNs are ignored.
 func (n *Node) Adjust(input []float64, influence float64) {
 	l := min(len(input), len(n.Weights))
 
 	for i := 0; i < l; i++ {
+		if math.IsNaN(input[i]) {
+			continue
+		}
+
 		n.Weights[i] += (input[i] - n.Weights[i]) * influence
 	}
 }

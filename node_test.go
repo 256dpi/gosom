@@ -2,6 +2,7 @@ package gosom
 
 import (
 	"testing"
+	"math"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -40,6 +41,15 @@ func TestAdjust4(t *testing.T) {
 	n.Adjust([]float64{0.0, 0.0}, 1.0)
 
 	assert.Equal(t, []float64{0.0, 0.0}, n.Weights)
+}
+
+func TestAdjustNaN(t *testing.T) {
+	n := NewNode(0, 0, 2)
+	n.Weights = []float64{0.0, 0.0}
+
+	n.Adjust([]float64{math.NaN(), 1.0}, 1.0)
+
+	assert.Equal(t, []float64{0.0, 1.0}, n.Weights)
 }
 
 func TestX(t *testing.T) {
