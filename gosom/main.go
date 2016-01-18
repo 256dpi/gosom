@@ -138,22 +138,22 @@ func doTest(config *config) {
 	test := data.SubMatrix(0, data.Columns-config.testDimensions)
 
 	fmt.Println("Classification tests:")
-	testHelper(data, test, func(input []float64) []float64 {
+	testHelper(config, data, test, func(input []float64) []float64 {
 		return som.Classify(input)
 	})
 
 	fmt.Printf("\nInterpolation tests (K=%d):\n", config.nearestNeighbors)
-	testHelper(data, test, func(input []float64) []float64 {
+	testHelper(config, data, test, func(input []float64) []float64 {
 		return som.Interpolate(input, config.nearestNeighbors)
 	})
 
 	fmt.Printf("\nWeighted interpolation tests (K=%d):\n", config.nearestNeighbors)
-	testHelper(data, test, func(input []float64) []float64 {
+	testHelper(config, data, test, func(input []float64) []float64 {
 		return som.WeightedInterpolate(input, config.nearestNeighbors)
 	})
 }
 
-func testHelper(data *gosom.Matrix, test *gosom.Matrix, tester func([]float64) []float64) {
+func testHelper(config *config, data *gosom.Matrix, test *gosom.Matrix, tester func([]float64) []float64) {
 	allErrors := make([]float64, data.Rows)
 
 	for i := 0; i < data.Rows; i++ {
@@ -168,7 +168,9 @@ func testHelper(data *gosom.Matrix, test *gosom.Matrix, tester func([]float64) [
 
 		allErrors[i] = avg(localErrors)
 
-		fmt.Printf("  %.3f: %.3f (Error: %.2f%%)\n", data.Data[i], output, allErrors[i])
+		if !config.quiet {
+			fmt.Printf("  %.3f: %.3f (Error: %.2f%%)\n", data.Data[i], output, allErrors[i])
+		}
 	}
 
 	fmt.Printf("  Min: %.2f%%, Max: %.2f%%, Avg: %.2f%%\n", floats.Min(allErrors), floats.Max(allErrors), avg(allErrors))

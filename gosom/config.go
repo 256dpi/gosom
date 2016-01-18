@@ -35,6 +35,7 @@ type config struct {
 	size                 int
 	prefix               string
 	testDimensions       int
+	quiet                bool
 }
 
 func parseConfig() *config {
@@ -46,7 +47,7 @@ Usage:
   gosom classify <file> <input>
   gosom interpolate <file> <input> [-w -k <nn>]
   gosom plot <file> <directory> [-s <ns> -p <fp>]
-  gosom test <file> <data> [-k <nn> -j <td> ]
+  gosom test <file> <data> [-k <nn> -j <td> -q]
   gosom -f
   gosom -h
   gosom -v
@@ -66,6 +67,7 @@ Options:
   -s <ns>  Size of the individual nodes [default: 10].
   -p <fp>  Filename prefix [default: som].
   -j <td>  Number of dimensions to test [default: 1].
+  -q       Quiet output.
   -f       Plot functions to current directoy.
   -h       Show help.
   -v       Show version.`
@@ -103,6 +105,7 @@ Options:
 		size:                 getInt(a["-s"]),
 		prefix:               getString(a["-p"]),
 		testDimensions:       getInt(a["-j"]),
+		quiet:                getBool(a["-q"]),
 	}
 }
 
