@@ -162,7 +162,12 @@ func testHelper(config *config, data *gosom.Matrix, test *gosom.Matrix, tester f
 		var localErrors []float64
 
 		for j := test.Columns; j < data.Columns; j++ {
-			err := 100.0 / (data.Maximums[j] - data.Minimums[j]) * math.Abs(output[j]-data.Data[i][j])
+			divider := data.Maximums[j] - data.Minimums[j]
+			if divider == 0.0 {
+				divider =	 1.0
+			}
+
+			err := 100.0 / divider * math.Abs(output[j]-data.Data[i][j])
 			localErrors = append(localErrors, err)
 		}
 
