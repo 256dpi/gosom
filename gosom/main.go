@@ -182,7 +182,7 @@ func testHelper(config *config, data *gosom.Matrix, test *gosom.Matrix, tester f
 }
 
 func doFunctions() {
-	fmt.Printf("Plotting cooling functions to './cooling.png' ...\n")
+	fmt.Println("Plotting cooling functions to './cooling.png' ...")
 	plotCoolingFunctions("cooling.png")
 
 	fmt.Println("Plotting neighborhood functions to './neighborhood.png' ...")
@@ -236,14 +236,14 @@ func storeSOM(file string, som *gosom.SOM) {
 }
 
 func readInput(input string) []float64 {
-	var floats []float64
+	var values []float64
 
-	err := json.Unmarshal([]byte(input), &floats)
+	err := json.Unmarshal([]byte(input), &values)
 	if err != nil {
 		panic(err)
 	}
 
-	return floats
+	return values
 }
 
 func avg(v []float64) float64 {

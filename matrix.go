@@ -71,14 +71,14 @@ func (m *Matrix) RandomRow() []float64 {
 
 // SubMatrix returns a matrix that holds a subset of the current matrix.
 func (m *Matrix) SubMatrix(start, length int) *Matrix {
-	floats := make([][]float64, m.Rows)
+	values := make([][]float64, m.Rows)
 
 	for i, row := range m.Data {
-		floats[i] = make([]float64, length)
-		copy(floats[i], row[start:start+length])
+		values[i] = make([]float64, length)
+		copy(values[i], row[start:start+length])
 	}
 
-	return NewMatrix(floats)
+	return NewMatrix(values)
 }
 
 // LoadMatrixFromCSV reads CSV data and returns a new matrix.
@@ -90,22 +90,22 @@ func LoadMatrixFromCSV(source io.Reader) (*Matrix, error) {
 		return nil, err
 	}
 
-	floats := make([][]float64, len(data))
+	values := make([][]float64, len(data))
 
 	for i, row := range data {
-		floats[i] = make([]float64, len(row))
+		values[i] = make([]float64, len(row))
 
 		for j, value := range row {
 			f, err := strconv.ParseFloat(value, 64)
 			if err != nil {
-				floats[i][j] = math.NaN()
+				values[i][j] = math.NaN()
 			} else {
-				floats[i][j] = f
+				values[i][j] = f
 			}
 		}
 	}
 
-	return NewMatrix(floats), nil
+	return NewMatrix(values), nil
 }
 
 // LoadMatrixFromJSON read JSON data and returns a new matrix.
@@ -119,19 +119,19 @@ func LoadMatrixFromJSON(source io.Reader) (*Matrix, error) {
 		return nil, err
 	}
 
-	floats := make([][]float64, len(data))
+	values := make([][]float64, len(data))
 
 	for i:=0; i<len(data); i++ {
-		floats[i] = make([]float64, len(data[i]))
+		values[i] = make([]float64, len(data[i]))
 
 		for j:=0; j<len(data[i]); j++ {
 			if f, ok := data[i][j].(float64); ok {
-				floats[i][j] = f
+				values[i][j] = f
 			} else {
-				floats[i][j] = math.NaN()
+				values[i][j] = math.NaN()
 			}
 		}
 	}
 
-	return NewMatrix(floats), nil
+	return NewMatrix(values), nil
 }

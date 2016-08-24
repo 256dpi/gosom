@@ -39,14 +39,14 @@ type latticeSorter struct {
 	sortFunction func(n1, n2 *Node) bool
 }
 
-func (ns *latticeSorter) Len() int {
-	return len(ns.lattice)
+func (s *latticeSorter) Len() int {
+	return len(s.lattice)
 }
 
-func (ns *latticeSorter) Swap(i, j int) {
-	ns.lattice[i], ns.lattice[j] = ns.lattice[j], ns.lattice[i]
+func (s *latticeSorter) Swap(i, j int) {
+	s.lattice[i], s.lattice[j] = s.lattice[j], s.lattice[i]
 }
 
-func (ns *latticeSorter) Less(i, j int) bool {
-	return ns.sortFunction(ns.lattice[i], ns.lattice[j])
+func (s *latticeSorter) Less(i, j int) bool {
+	return s.sortFunction(s.lattice[i], s.lattice[j])
 }
