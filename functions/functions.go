@@ -3,18 +3,18 @@ package functions
 import "math"
 
 // A DistanceFunction calculates the distance between to points.
-type DistanceFunction func(from, to []float64) (distance float64)
+type DistanceFunction func(from, to []float64) float64
 
 // A CoolingFunction calculates the cooling alpha [1..0] for an input value [0..1].
-type CoolingFunction func(progress float64) (factor float64)
+type CoolingFunction func(progress float64) float64
 
 // A NeighborhoodFunction calculates the influence [1..0] of a distance [0..1..2].
-type NeighborhoodFunction func(distance float64) (influence float64)
+type NeighborhoodFunction func(distance float64) float64
 
 // EuclideanDistance returns the euclidean distance between two points.
 //
 // Note: Dimensions that include NaNs are ignored.
-func EuclideanDistance(from, to []float64) (distance float64) {
+func EuclideanDistance(from, to []float64) float64 {
 	d := 0.0
 	l := min(len(from), len(to))
 
@@ -32,7 +32,7 @@ func EuclideanDistance(from, to []float64) (distance float64) {
 // ManhattanDistance returns the manhattan distance between two points.
 //
 // Note: Dimensions that include NaNs are ignored.
-func ManhattanDistance(from, to []float64) (distance float64) {
+func ManhattanDistance(from, to []float64) float64 {
 	d := 0.0
 	l := min(len(from), len(to))
 
@@ -48,29 +48,29 @@ func ManhattanDistance(from, to []float64) (distance float64) {
 }
 
 // LinearCooling returns the linear cooling factor for progress.
-func LinearCooling(progress float64) (factor float64) {
+func LinearCooling(progress float64) float64 {
 	return 1.0 - progress
 }
 
 // SoftCooling returns the soft exponential cooling factor for progress.
-func SoftCooling(progress float64) (factor float64) {
+func SoftCooling(progress float64) float64 {
 	d := -math.Log(0.2 / 1.2)
 	return (1.2 * math.Exp(-progress*d)) - 0.2
 }
 
 // MediumCooling returns the medium exponential cooling factor for progress.
-func MediumCooling(progress float64) (factor float64) {
+func MediumCooling(progress float64) float64 {
 	return 1.005*math.Pow(0.005/1.0, progress) - 0.005
 }
 
 // HardCooling returns the hard exponential cooling factor for progress.
-func HardCooling(progress float64) (factor float64) {
+func HardCooling(progress float64) float64 {
 	d := 1.0 / 101.0
 	return (1.0+d)/(1+100*progress) - d
 }
 
 // BubbleNeighborhood returns the influence for the specified distance.
-func BubbleNeighborhood(distance float64) (influence float64) {
+func BubbleNeighborhood(distance float64) float64 {
 	d := math.Abs(distance)
 
 	if d < 1.0 {
@@ -81,7 +81,7 @@ func BubbleNeighborhood(distance float64) (influence float64) {
 }
 
 // ConeNeighborhood returns the influence for the specified distance.
-func ConeNeighborhood(distance float64) (influence float64) {
+func ConeNeighborhood(distance float64) float64 {
 	d := math.Abs(distance)
 
 	if d < 1.0 {
@@ -92,19 +92,19 @@ func ConeNeighborhood(distance float64) (influence float64) {
 }
 
 // GaussianNeighborhood returns the influence for the specified distance.
-func GaussianNeighborhood(distance float64) (influence float64) {
+func GaussianNeighborhood(distance float64) float64 {
 	stdDev := 4.0
 	norm := (2.0 * math.Pow(2.0, 2.0)) / math.Pow(stdDev, 2.0)
 	return math.Exp((-distance * distance) / norm)
 }
 
 // EpanechicovNeighborhood returns the influence for the specified distance.
-func EpanechicovNeighborhood(distance float64) (influence float64) {
+func EpanechicovNeighborhood(distance float64) float64 {
 	return math.Max(0.0, 1.0-(distance*distance))
 }
 
 // CoolingFactor returns the cooling factors based on the selected coolingFunction.
-func CoolingFactor(coolingFunction string, progress float64) (factor float64) {
+func CoolingFactor(coolingFunction string, progress float64) float64 {
 	switch coolingFunction {
 	case "linear":
 		return LinearCooling(progress)
@@ -120,7 +120,7 @@ func CoolingFactor(coolingFunction string, progress float64) (factor float64) {
 }
 
 // Distance returns the distance between two points based on the selected distanceFunction.
-func Distance(distanceFunction string, from, to []float64) (distance float64) {
+func Distance(distanceFunction string, from, to []float64) float64 {
 	switch distanceFunction {
 	case "euclidean":
 		return EuclideanDistance(from, to)
@@ -131,8 +131,8 @@ func Distance(distanceFunction string, from, to []float64) (distance float64) {
 	return 0.0
 }
 
-// NeighborhoodInfluence returns the influence of the distnance based on the selected neighborhoodFunction.
-func NeighborhoodInfluence(neighborhoodFunction string, distance float64) (influence float64) {
+// NeighborhoodInfluence returns the influence of the distance based on the selected neighborhoodFunction.
+func NeighborhoodInfluence(neighborhoodFunction string, distance float64) float64 {
 	switch neighborhoodFunction {
 	case "bubble":
 		return BubbleNeighborhood(distance)
