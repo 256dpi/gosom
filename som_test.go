@@ -1,9 +1,9 @@
 package gosom
 
 import (
+	"math"
 	"strings"
 	"testing"
-	"math"
 
 	"github.com/stretchr/testify/assert"
 )

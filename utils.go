@@ -28,7 +28,7 @@ func clearNANs(in []float64) []float64 {
 	var out []float64
 
 	for _, f := range in {
-		if ! math.IsNaN(f) {
+		if !math.IsNaN(f) {
 			out = append(out, f)
 		}
 	}

@@ -1,8 +1,8 @@
 package gosom
 
 import (
-	"testing"
 	"github.com/stretchr/testify/require"
+	"testing"
 )
 
 func TestTraining(t *testing.T) {

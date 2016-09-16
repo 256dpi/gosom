@@ -1,10 +1,10 @@
 package gosom
 
 import (
-	"strings"
-	"testing"
 	"fmt"
 	"math"
+	"strings"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 )

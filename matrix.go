@@ -27,9 +27,9 @@ type Matrix struct {
 // The function expects the float slice to be consistent in columns.
 func NewMatrix(data [][]float64) *Matrix {
 	m := &Matrix{
-		Data:     data,
-		Rows:     len(data),
-		Columns:  len(data[0]),
+		Data:    data,
+		Rows:    len(data),
+		Columns: len(data[0]),
 	}
 
 	m.Minimums = make([]float64, m.Columns)
@@ -121,10 +121,10 @@ func LoadMatrixFromJSON(source io.Reader) (*Matrix, error) {
 
 	values := make([][]float64, len(data))
 
-	for i:=0; i<len(data); i++ {
+	for i := 0; i < len(data); i++ {
 		values[i] = make([]float64, len(data[i]))
 
-		for j:=0; j<len(data[i]); j++ {
+		for j := 0; j < len(data[i]); j++ {
 			if f, ok := data[i][j].(float64); ok {
 				values[i][j] = f
 			} else {

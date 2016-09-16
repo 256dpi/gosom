@@ -1,8 +1,8 @@
 package gosom
 
 import (
-	"testing"
 	"github.com/stretchr/testify/require"
+	"testing"
 )
 
 func TestDrawDimensions(t *testing.T) {

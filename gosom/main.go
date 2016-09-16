@@ -164,7 +164,7 @@ func testHelper(config *config, data *gosom.Matrix, test *gosom.Matrix, tester f
 		for j := test.Columns; j < data.Columns; j++ {
 			divider := data.Maximums[j] - data.Minimums[j]
 			if divider == 0.0 {
-				divider =	 1.0
+				divider = 1.0
 			}
 
 			err := 100.0 / divider * math.Abs(output[j]-data.Data[i][j])
