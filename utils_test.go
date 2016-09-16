@@ -1,10 +1,10 @@
 package gosom
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"math"
 )
 
 func TestMin(t *testing.T) {
